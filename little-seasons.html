@@ -227,7 +227,7 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size:
     </form>
     <div class="weather" id="weather" aria-live="polite">
       <span class="wx-icon" id="wx-icon"></span>
-      <div class="wx-main"><div class="wx-line" id="wx-line"></div><div class="wx-tip" id="wx-tip"></div></div>
+      <div class="wx-main"><div class="wx-line" id="wx-line"></div><div class="wx-tip" id="wx-tip"></div><div class="wx-tip" id="wx-climate" hidden></div></div>
       <button class="ghost" type="button" id="loc-btn">Add location</button>
     </div>
     <form class="setup" id="loc-form" hidden>
@@ -289,10 +289,10 @@ const OCCASIONS = {
   thanksgiving: { label: "Thanksgiving",    ranges: [[11, 1, 11, 30]] },
   holidays:     { label: "Winter holidays", ranges: [[12, 1, 12, 31]] },
   valentine:    { label: "Valentine’s",     ranges: [[2, 1, 2, 14]] },
-  fall:         { label: "Autumn",          ranges: [[9, 15, 11, 30]] },
-  winter:       { label: "Winter",          ranges: [[12, 1, 12, 31], [1, 1, 2, 29]] },
-  spring:       { label: "Spring",          ranges: [[3, 1, 5, 31]] },
-  summer:       { label: "Summer",          ranges: [[6, 1, 9, 14]] },
+  fall:         { label: "Autumn",          ranges: [[9, 15, 11, 30]], south: [[3, 15, 5, 31]] },
+  winter:       { label: "Winter",          ranges: [[12, 1, 12, 31], [1, 1, 2, 29]], south: [[6, 1, 9, 14]] },
+  spring:       { label: "Spring",          ranges: [[3, 1, 5, 31]], south: [[9, 15, 11, 30]] },
+  summer:       { label: "Summer",          ranges: [[6, 1, 9, 14]], south: [[12, 1, 12, 31], [1, 1, 3, 14]] },
   everyday:     { label: "Any day",         ranges: [] }
 };
 
@@ -937,7 +937,49 @@ const ACTIVITIES = [
     steps: ["Find a shady spot.", "Young babies: tummy time and back time on the blanket.", "Crawlers and walkers: let her explore just off the blanket and come back.", "Point out dogs, birds and people walking by."],
     why: "Outdoors there is more to see and hear, and crawlers and walkers get new surfaces to master.",
     safety: "Shade for babies under 6 months; sunscreen and a hat for older ones.",
-    src: ["sun", "aapplay"] }
+    src: ["sun", "aapplay"] },
+
+  // Warm places (mild winters, no fall leaves or snow)
+  { id: "big-leaf-basket", occ: ["fall", "spring"], min: 3, max: 14, dom: ["mind", "body"], mins: 10, where: "either", req: "warm",
+    title: "Big leaf and flower basket",
+    short: "Gather a few big, sturdy leaves and a flower from outside for her to touch, wave and crinkle.",
+    need: "Large leaves (like ti, banana or sea grape), a non‑toxic flower such as hibiscus, a low basket",
+    steps: ["Pick leaves of different sizes and textures: waxy, fuzzy, ridged.", "Brush a leaf softly on her hand and foot and name it.", "Let her hold and wave one. Big leaves make a great swish sound.", "Smell the flower together and let her touch the soft petals."],
+    why: "Different textures, sizes and smells feed her senses, and gripping a big leaf strengthens her hands. Real natural objects are a Montessori favorite.",
+    safety: "Check that plants are non‑toxic before she mouths them, and take away pieces that tear off.",
+    src: ["treasure", "choke"] },
+  { id: "petal-wall", occ: ["fall", "spring", "thanksgiving"], min: 12, max: 30, dom: ["body", "mind"], mins: 15, where: "either", req: "warm",
+    title: "Petal and leaf sticky wall",
+    short: "Tape contact paper sticky side out at her height and press on petals, leaves and grass from a walk.",
+    need: "Clear contact paper, painter’s tape, flowers, leaves and grass you collected together",
+    steps: ["Collect bits of nature on a walk. Let her carry the bag.", "Tape the contact paper to the wall, sticky side out, at her standing height.", "Show her how to press a petal on. Then let her go.", "Talk about colors and sizes as she works."],
+    why: "Peeling and pressing build the pincer grasp, and standing at the wall builds balance for new walkers.",
+    safety: "Watch for petals going into mouths.",
+    src: ["aapplay", "cdc"] },
+  { id: "pumpkin-float", occ: ["halloween"], min: 9, max: 30, dom: ["mind", "body"], mins: 15, where: "either", req: "warm", wx: ["hot", "sunny"],
+    title: "Pumpkin float bin",
+    short: "Mini pumpkins float. Drop a few in a tub of water with cups and a scoop for a cool Halloween splash.",
+    need: "A shallow tub of water, 2–3 mini pumpkins or gourds, cups, a small scoop",
+    steps: ["Set the tub on a towel, in the shade if you’re outside.", "Drop in a pumpkin: “It floats!”", "Let her push them under and watch them pop back up.", "Scoop and pour together."],
+    why: "Floating and sinking is early science, and scooping builds hand control. It’s Halloween play that suits a warm day.",
+    safety: "Stay within arm’s reach around any water and empty the tub right after.",
+    src: ["water", "aapplay"] },
+  { id: "pumpkin-hunt", occ: ["halloween"], min: 15, max: 36, dom: ["body", "mind"], mins: 15, where: "out", req: "warm", wx: ["sunny", "cloudy"],
+    title: "Backyard pumpkin hunt",
+    short: "Hide mini pumpkins and orange balls in the yard or sand and go find them together.",
+    need: "Mini pumpkins, orange balls, a basket",
+    steps: ["Hide things in easy spots first: half in the open.", "Walk around together: “Where’s an orange pumpkin?”", "Let her carry the basket and drop each find in.", "Count them at the end."],
+    why: "Searching builds attention and memory, and carrying a basket while walking builds balance and strength.",
+    safety: "Hide things at ground level, away from anything sharp. Shade and a hat on sunny days.",
+    src: ["aapplay", "sun"] },
+  { id: "pretend-snow", occ: ["winter", "holidays"], min: 9, max: 36, dom: ["mind", "body"], mins: 15, where: "in", req: "warm",
+    title: "Pretend snow bin",
+    short: "Shaved or crushed ice in a tub lets her feel cold and watch it melt, even where it never snows.",
+    need: "Shaved or finely crushed ice, a tub, cups and spoons, a towel",
+    steps: ["Fill a tub with shaved ice and set it on a towel.", "Touch it together: “Cold!”", "Scoop, pour and pat little snow piles.", "Watch it turn to water and talk about melting."],
+    why: "Feeling cold and seeing ice melt is hands‑on science, and scooping builds hand control.",
+    safety: "Use finely shaved ice only. Hard chunks are a choking hazard.",
+    src: ["choke", "aapplay"] }
 ];
 
 /* Where each activity happens and which weather suits it.
@@ -945,11 +987,12 @@ const ACTIVITIES = [
 const FIT = {
   "pumpkin-explore": { where: "either" }, "pumpkin-wash": { where: "either" }, "tee-hammer": { where: "either" },
   "decor-walk": { where: "out", wx: ["sunny", "cloudy", "cold"] },
-  "leaf-crunch": { where: "either", wx: ["windy"] }, "nature-sort": { where: "either" },
-  "leaf-pile": { where: "out", wx: ["sunny", "cloudy", "windy"] }, "breeze-scarf": { where: "out", wx: ["windy"] },
+  "leaf-crunch": { where: "either", wx: ["windy"], req: "cold" }, "leaf-wall": { req: "cold" }, "nature-sort": { where: "either" },
+  "leaf-pile": { where: "out", wx: ["sunny", "cloudy", "windy"], req: "cold" }, "breeze-scarf": { where: "out", wx: ["windy"] },
+  "snow-walk": { req: "snow" },
   "dance-party": { wx: ["rainy", "cold", "snowy", "hot"] },
-  "snow-bin": { needs: ["snowy"] }, "ice-rescue": { wx: ["hot"] }, "warm-cold": { wx: ["cold"] },
-  "blanket-ride": { wx: ["rainy", "cold", "snowy"] }, "coat-flip": { wx: ["cold", "snowy"] }, "book-nest": { wx: ["rainy", "cold", "snowy"] },
+  "snow-bin": { needs: ["snowy"], req: "snow" }, "ice-rescue": { wx: ["hot"] }, "warm-cold": { wx: ["cold"] },
+  "blanket-ride": { wx: ["rainy", "cold", "snowy"] }, "coat-flip": { wx: ["cold", "snowy"], req: "cold" }, "book-nest": { wx: ["rainy", "cold", "snowy"] },
   "grass-feet": { where: "out", wx: ["sunny", "hot"] }, "plant-seeds": { where: "either" },
   "bird-window": { wx: ["rainy", "snowy", "cold"] }, "puddle-stomp": { where: "out", needs: ["rainy"] },
   "water-tray": { where: "either", wx: ["hot", "sunny"] }, "shade-tummy": { where: "out", wx: ["sunny", "cloudy", "hot"] },
@@ -1052,7 +1095,28 @@ async function findPlace(q) {
   const j = await r.json();
   const p = j.results && j.results[0];
   if (!p) return null;
-  return { name: p.name + (p.admin1 && p.admin1 !== p.name ? ", " + p.admin1 : ""), lat: p.latitude, lon: p.longitude };
+  return { name: p.name + (p.admin1 && p.admin1 !== p.name ? ", " + p.admin1 : ""), lat: p.latitude, lon: p.longitude, country: p.country_code || null };
+}
+
+// Climate from last year's daily lows and snowfall at this spot.
+// About two weeks of frost means deciduous trees turn and drop leaves; 10 cm of snow a year means snow play is realistic.
+async function loadClimate(loc) {
+  const y = today.getFullYear() - 1;
+  let c;
+  try {
+    const r = await fetch("https://archive-api.open-meteo.com/v1/archive?latitude=" + loc.lat + "&longitude=" + loc.lon +
+      "&start_date=" + y + "-01-01&end_date=" + y + "-12-31&daily=temperature_2m_min,snowfall_sum&timezone=auto");
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = (await r.json()).daily;
+    const frostDays = d.temperature_2m_min.filter(t => t != null && t < 0).length;
+    const snowCm = d.snowfall_sum.reduce((s, v) => s + (v || 0), 0);
+    c = { cold: frostDays >= 15, snow: snowCm >= 10, south: loc.lat < 0 };
+  } catch (e) {
+    // Rough guess by latitude if the history lookup fails
+    const lat = Math.abs(loc.lat);
+    c = { cold: lat >= 33, snow: lat >= 38, south: loc.lat < 0 };
+  }
+  if (state.loc === loc) { loc.climate = c; store.set("loc", loc); }
 }
 
 /* ---------- date + age logic ---------- */
@@ -1064,7 +1128,27 @@ function inRanges(date, ranges) {
   return ranges.some(([m1, d1, m2, d2]) => v >= m1 * 100 + d1 && v <= m2 * 100 + d2);
 }
 function currentOccasions(date) {
-  return Object.keys(OCCASIONS).filter(k => k !== "everyday" && inRanges(date, OCCASIONS[k].ranges));
+  return Object.keys(OCCASIONS).filter(k => k !== "everyday" && inRanges(date, occRanges(k)));
+}
+function climate() { return state.loc && state.loc.climate ? state.loc.climate : null; }
+// Seasons flip south of the equator; Thanksgiving only where it's celebrated
+function occRanges(k) {
+  const o = OCCASIONS[k], c = climate();
+  if (k === "thanksgiving") {
+    const cc = state.loc && state.loc.country;
+    if (!cc || cc === "US") return o.ranges;
+    return cc === "CA" ? [[9, 25, 10, 15]] : [];
+  }
+  return c && c.south && o.south ? o.south : o.ranges;
+}
+// req: cold = needs frosty winters (fall leaves), snow = needs snowy winters, warm = only where winters stay mild
+function climateOk(a) {
+  if (!a.req) return true;
+  const c = climate();
+  if (!c) return a.req !== "warm";
+  if (a.req === "cold") return c.cold;
+  if (a.req === "snow") return c.snow;
+  return !c.cold;
 }
 function parseDate(s) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
@@ -1105,7 +1189,7 @@ const state = {
   liveStatus: "idle"
 };
 function currentWx() { return state.wxPick === "auto" ? (state.live ? state.live.cond : null) : state.wxPick; }
-const nowOccs = currentOccasions(today);
+let nowOccs = currentOccasions(today);
 
 function babyDob() { return parseDate(state.dob) || exampleDob; }
 function babyName() { return state.name.trim(); }
@@ -1117,7 +1201,7 @@ function matches() {
   const occs = activeOccs();
   const W = currentWx();
   const storm = !!(W && state.wxPick === "auto" && state.live && state.live.thunder);
-  const byAge = ACTIVITIES.filter(a => age >= a.min && age <= a.max);
+  const byAge = ACTIVITIES.filter(a => age >= a.min && age <= a.max && climateOk(a));
   const byDom = a => state.dom === "all" || a.dom.includes(state.dom);
   const needsOk = a => !a.needs || !W || a.needs.includes(W);
   const fits = a => !!W && ((a.wx || []).includes(W) || (a.needs || []).includes(W));
@@ -1171,7 +1255,7 @@ function renderHeader(age) {
 }
 
 function renderRails() {
-  const occKeys = ["now", ...Object.keys(OCCASIONS).filter(k => !nowOccs.includes(k))];
+  const occKeys = ["now", ...Object.keys(OCCASIONS).filter(k => !nowOccs.includes(k) && (k === "everyday" || occRanges(k).length))];
   const occRail = $("occ-rail");
   occRail.querySelectorAll(".chip").forEach(c => c.remove());
   occKeys.forEach(k => {
@@ -1327,9 +1411,24 @@ function renderWeather() {
   $("wx-line").textContent = line;
   $("wx-tip").textContent = tip;
   $("wx-tip").hidden = !tip;
+  const note = climateNote();
+  $("wx-climate").textContent = note;
+  $("wx-climate").hidden = !note;
+}
+
+function climateNote() {
+  const c = climate();
+  if (!c) return "";
+  const parts = [];
+  if (c.south) parts.push("Southern hemisphere, so the seasons are flipped.");
+  if (!c.cold) parts.push("Winters stay mild here, so ideas skip fall leaves and snow and add warm‑weather ones.");
+  else if (!c.snow) parts.push("Snow is rare here, so snow activities are hidden.");
+  return parts.join(" ");
 }
 
 function render() {
+  nowOccs = currentOccasions(today);
+  if (state.occ !== "now" && state.occ !== "everyday" && !occRanges(state.occ).length) state.occ = "now";
   const { list, topped, age } = matches();
   renderHeader(age);
   renderWeather();
@@ -1388,11 +1487,12 @@ $("setup").addEventListener("submit", e => {
 $("baby-dob").addEventListener("input", () => $("baby-dob").setCustomValidity(""));
 
 function showLocErr(msg) { $("loc-err").textContent = msg; $("loc-err").hidden = !msg; }
-function setLoc(p) {
+async function setLoc(p) {
   state.loc = p;
   store.set("loc", p);
   state.wxPick = "auto";
   $("loc-form").hidden = true;
+  await loadClimate(p);
   loadWeather(true);
 }
 $("loc-btn").addEventListener("click", () => {
@@ -1430,5 +1530,8 @@ $("geo-btn").addEventListener("click", () => {
 
 renderSources();
 render();
-loadWeather(false);
+(async () => {
+  if (state.loc && !state.loc.climate) await loadClimate(state.loc);
+  loadWeather(false);
+})();
 </script>
