@@ -1,0 +1,1446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Seasonal, weather-aware play ideas matched to your baby's age.">
+<meta name="apple-mobile-web-app-title" content="Little Seasons">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20width%3D%2224%22%20height%3D%2224%22%20rx%3D%226%22%20fill%3D%22%23d0650f%22%2F%3E%3Cpath%20d%3D%22M12%207c-5%200-8%202.7-8%206.5S7%2020%2012%2020s8-2.7%208-6.5S17%207%2012%207Z%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M12%207c0-2%201-3.3%202.5-3.8%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Little Seasons</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one column app. Baby + season header, filter rail, "today's pick" beside a milestone note, then a grid of activity cards. The season sets the accent. */
+:root {
+  --bg: #f3f2f6;
+  --surface: #ffffff;
+  --sunk: #ebe9f0;
+  --ink: #23212b;
+  --muted: #676476;
+  --line: #dedbe6;
+  --body: #b8492a;
+  --mind: #2a66a8;
+  --heart: #a8326f;
+  --halloween: #d0650f;
+  --fall: #9c5a1b;
+  --thanksgiving: #8d6418;
+  --holidays: #23714f;
+  --winter: #33648f;
+  --valentine: #b8344f;
+  --spring: #43812f;
+  --summer: #a87a00;
+  --everyday: #5f50c0;
+  --accent: var(--everyday);
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Figtree", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15141a; --surface: #1e1d25; --sunk: #26252e; --ink: #ecebf2; --muted: #a3a0b1; --line: #34323e;
+    --body: #f08a68; --mind: #7fb1ea; --heart: #ec8dc0;
+    --halloween: #f59a4a; --fall: #dc9a58; --thanksgiving: #dcae5e; --holidays: #6fcb9f; --winter: #8fbbe6;
+    --valentine: #f08ca2; --spring: #98d282; --summer: #f1c64e; --everyday: #aa9ef2;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15141a; --surface: #1e1d25; --sunk: #26252e; --ink: #ecebf2; --muted: #a3a0b1; --line: #34323e;
+  --body: #f08a68; --mind: #7fb1ea; --heart: #ec8dc0;
+  --halloween: #f59a4a; --fall: #dc9a58; --thanksgiving: #dcae5e; --holidays: #6fcb9f; --winter: #8fbbe6;
+  --valentine: #f08ca2; --spring: #98d282; --summer: #f1c64e; --everyday: #aa9ef2;
+  color-scheme: dark;
+}
+[data-occ="halloween"] { --accent: var(--halloween) }
+[data-occ="fall"] { --accent: var(--fall) }
+[data-occ="thanksgiving"] { --accent: var(--thanksgiving) }
+[data-occ="holidays"] { --accent: var(--holidays) }
+[data-occ="winter"] { --accent: var(--winter) }
+[data-occ="valentine"] { --accent: var(--valentine) }
+[data-occ="spring"] { --accent: var(--spring) }
+[data-occ="summer"] { --accent: var(--summer) }
+[data-occ="everyday"] { --accent: var(--everyday) }
+
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 1rem; line-height: 1.5;
+}
+.wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+  display: grid; gap: 28px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15 }
+p { margin: 0 }
+button, input { font: inherit; color: inherit }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px }
+
+/* Header */
+.top { display: grid; gap: 14px }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--accent); font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: .02em }
+.brand svg { width: 26px; height: 26px }
+.hello { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px }
+.hello h1 { font-size: clamp(1.8rem, 4.6vw, 2.9rem); font-weight: 700; max-width: 22ch }
+.hello h1 em { font-style: normal; color: var(--accent) }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--muted) }
+.ghost:hover { color: var(--ink); border-color: var(--muted) }
+
+.example {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+  background: var(--sunk); border-radius: var(--r); padding: 10px 14px; font-size: .93rem; color: var(--muted);
+}
+.example b { color: var(--ink) }
+
+form.setup {
+  display: flex; flex-wrap: wrap; align-items: end; gap: 12px 16px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px;
+}
+form.setup label { display: grid; gap: 4px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+form.setup input { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 9px 12px; font-size: 1rem; text-transform: none; letter-spacing: 0; min-width: 0; width: 13rem; max-width: 100% }
+.solid { background: var(--accent); color: var(--surface); border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 700; cursor: pointer }
+.solid:hover { filter: brightness(1.08) }
+
+/* Filters */
+.filters { display: grid; gap: 12px }
+.rail { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.rail-label { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); min-width: 5.5rem }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--line); background: var(--surface); border-radius: 999px;
+  padding: 6px 13px; cursor: pointer; font-weight: 600; font-size: .9rem;
+}
+.chip svg { width: 16px; height: 16px; flex: none }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink) }
+.chip .now { font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; color: var(--accent) }
+.chip[aria-pressed="true"] .now { color: inherit; opacity: .75 }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none }
+.dot.body { background: var(--body) } .dot.mind { background: var(--mind) } .dot.heart { background: var(--heart) }
+
+/* Pick + milestones */
+.feature { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start }
+@media (max-width: 820px) { .feature { grid-template-columns: minmax(0, 1fr) } }
+.pick {
+  background: var(--surface); border-radius: calc(var(--r) + 4px); padding: 24px;
+  border: 1px solid var(--line); box-shadow: 0 1px 0 var(--line), 0 18px 40px -28px color-mix(in srgb, var(--accent) 60%, transparent);
+  display: grid; gap: 16px; position: relative; overflow: hidden;
+}
+.pick::after {
+  content: ""; position: absolute; right: -60px; top: -60px; width: 180px; height: 180px; border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 14%, transparent); pointer-events: none;
+}
+.pick-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; position: relative; z-index: 1 }
+.eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent) }
+.pick h2 { font-size: clamp(1.5rem, 3.2vw, 2.1rem); font-weight: 700 }
+.pick .lede { font-size: 1.05rem; color: var(--muted); max-width: 60ch }
+.pick-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px }
+@media (max-width: 560px) { .pick-cols { grid-template-columns: minmax(0, 1fr) } }
+.pick ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px }
+.sub { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px }
+
+.milestones { background: var(--sunk); border-radius: var(--r); padding: 20px; display: grid; gap: 12px }
+.milestones h3 { font-size: 1.15rem }
+.milestones ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px }
+.milestones li { display: grid; grid-template-columns: 9px minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: .95rem }
+.milestones li .dot { transform: translateY(-1px) }
+.milestones .fine { font-size: .82rem; color: var(--muted) }
+.milestones a { color: inherit }
+
+/* Shared activity bits */
+.meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: .85rem; color: var(--muted) }
+.tag { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: var(--ink) }
+.why { border-left: 3px solid var(--accent); padding-left: 12px; font-size: .95rem }
+.safety { font-size: .88rem; color: var(--muted) }
+.safety b { color: var(--ink) }
+.cites { display: flex; flex-wrap: wrap; gap: 6px; font-size: .8rem }
+.cites a { color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px }
+.cites a:hover { color: var(--ink); border-color: var(--muted) }
+.need { font-size: .92rem }
+.need b { font-weight: 600 }
+.tried { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-weight: 600; font-size: .85rem; color: var(--muted) }
+.tried svg { width: 15px; height: 15px }
+.tried[aria-pressed="true"] { color: var(--heart); border-color: var(--heart) }
+.tried[aria-pressed="true"] svg path { fill: currentColor }
+
+/* Grid */
+.list-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px }
+.list-head h2 { font-size: 1.4rem }
+.list-head p { color: var(--muted); font-size: .92rem }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 10px; align-content: start }
+.card h3 { font-size: 1.12rem; font-weight: 700 }
+.card .occ { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 6px }
+.card .occ svg { width: 14px; height: 14px }
+.card p.short { color: var(--muted); font-size: .95rem }
+details summary { cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--ink); list-style: none; display: inline-flex; align-items: center; gap: 6px }
+details summary::-webkit-details-marker { display: none }
+details summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--sunk); font-size: .85rem }
+details[open] summary::before { content: "\2212" }
+details .inner { display: grid; gap: 10px; padding-top: 10px }
+details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: .93rem }
+.card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px }
+.empty { background: var(--sunk); border-radius: var(--r); padding: 22px; color: var(--muted) }
+
+/* Weather */
+.weather { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 16px }
+.wx-icon { color: var(--accent); display: grid; place-items: center }
+.wx-icon svg { width: 30px; height: 30px }
+.wx-main { display: grid; gap: 2px; min-width: 0; flex: 1 1 260px }
+.wx-line { font-weight: 600; font-variant-numeric: tabular-nums }
+.wx-tip { font-size: .9rem; color: var(--muted); max-width: 75ch }
+.err { width: 100%; color: var(--heart); font-size: .9rem }
+.badge-fit, .badge-later { font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 3px 8px }
+.badge-fit { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent) }
+.badge-later { color: var(--muted); background: var(--sunk) }
+.card.later { background: var(--sunk) }
+
+/* Sources */
+.sources { border-top: 1px solid var(--line); padding-top: 22px; display: grid; gap: 12px; font-size: .9rem; color: var(--muted) }
+.sources h2 { font-size: 1.1rem; color: var(--ink) }
+.sources ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px }
+.sources a { color: var(--ink) }
+.sources p { max-width: 75ch }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pick { animation: rise .35s ease-out }
+  @keyframes rise { from { transform: translateY(6px) } to { transform: none } }
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app" data-occ="everyday">
+  <header class="top">
+    <div class="brand"><span id="brand-glyph"></span>Little Seasons</div>
+    <div class="hello">
+      <h1 id="headline">Play ideas for your baby</h1>
+      <button class="ghost" id="edit-btn" type="button">Edit baby</button>
+    </div>
+    <div class="example" id="example-note" hidden>
+      <span><b>Showing a 7‑month‑old as an example.</b> Add her name and birthday to tailor the ideas.</span>
+      <button class="ghost" type="button" id="example-btn">Add birthday</button>
+    </div>
+    <form class="setup" id="setup" hidden>
+      <label for="baby-name">Name
+        <input id="baby-name" type="text" autocomplete="off" placeholder="e.g. Rosie">
+      </label>
+      <label for="baby-dob">Birthday
+        <input id="baby-dob" type="date" required>
+      </label>
+      <button class="solid" type="submit">Save</button>
+      <button class="ghost" type="button" id="cancel-btn">Cancel</button>
+    </form>
+    <div class="weather" id="weather" aria-live="polite">
+      <span class="wx-icon" id="wx-icon"></span>
+      <div class="wx-main"><div class="wx-line" id="wx-line"></div><div class="wx-tip" id="wx-tip"></div></div>
+      <button class="ghost" type="button" id="loc-btn">Add location</button>
+    </div>
+    <form class="setup" id="loc-form" hidden>
+      <label for="loc-city">Town or city
+        <input id="loc-city" type="text" autocomplete="address-level2" placeholder="e.g. Portland">
+      </label>
+      <button class="solid" type="submit" id="loc-submit">Find weather</button>
+      <button class="ghost" type="button" id="geo-btn">Use my location</button>
+      <button class="ghost" type="button" id="loc-cancel">Cancel</button>
+      <p class="err" id="loc-err" hidden></p>
+    </form>
+  </header>
+
+  <section class="filters" aria-label="Filters">
+    <div class="rail" id="occ-rail"><span class="rail-label">Season</span></div>
+    <div class="rail" id="wx-rail"><span class="rail-label">Weather</span></div>
+    <div class="rail" id="dom-rail"><span class="rail-label">Focus</span></div>
+  </section>
+
+  <section class="feature">
+    <article class="pick" id="pick" aria-live="polite"></article>
+    <aside class="milestones" id="milestones"></aside>
+  </section>
+
+  <section style="display:grid;gap:14px">
+    <div class="list-head">
+      <h2 id="list-title">More ideas</h2>
+      <p id="list-count"></p>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <footer class="sources">
+    <h2>Where these ideas come from</h2>
+    <p>Each activity is matched to the skills most babies are building at that age, using the CDC’s milestone checklists (the skills 75% or more of children show by each age) and the American Academy of Pediatrics. Many are adapted from Montessori infant and toddler practice: real objects, a calm uncluttered space, following the child’s lead, and letting her do it herself. The “serve and return” back-and-forth from Harvard’s Center on the Developing Child runs through all of them.</p>
+    <ul id="source-list"></ul>
+    <p>Every baby develops on her own timeline, and age ranges here are guides, not rules. Always supervise, check that objects are too big to swallow, and ask your pediatrician about anything that worries you.</p>
+    <p>Live weather from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open‑Meteo</a>. Your town is saved only in this browser.</p>
+  </footer>
+</div>
+
+<script>
+const SOURCES = {
+  cdc: ["CDC: Developmental Milestones", "https://www.cdc.gov/ncbddd/actearly/milestones/index.html"],
+  harvard: ["Harvard Center on the Developing Child: Serve and Return", "https://developingchild.harvard.edu/science/key-concepts/serve-and-return/"],
+  aapplay: ["AAP: The Power of Play (Pediatrics, 2018)", "https://doi.org/10.1542/peds.2018-2058"],
+  aapread: ["AAP: Literacy Promotion (Pediatrics, 2014)", "https://doi.org/10.1542/peds.2014-1384"],
+  tummy: ["AAP HealthyChildren: Back to Sleep, Tummy to Play", "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Back-to-Sleep-Tummy-to-Play.aspx"],
+  sun: ["AAP HealthyChildren: Sun Safety", "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Sun-Safety.aspx"],
+  water: ["AAP HealthyChildren: Water Safety for Young Children", "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Water-Safety-And-Young-Children.aspx"],
+  choke: ["AAP HealthyChildren: Choking Prevention", "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx"],
+  cold: ["AAP HealthyChildren: Winter Safety Tips", "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Winter-Safety.aspx"],
+  treasure: ["Montessori Academy: Treasure Baskets", "https://montessoriacademy.com.au/montessori-at-home/infant-resources/treasure-basket/"],
+  shelf: ["Montessori Academy: Setting Up an Infant Shelf", "https://montessoriacademy.com.au/montessori-at-home/getting-started/diy-montessori-shelves/infants/"]
+};
+
+const OCCASIONS = {
+  halloween:    { label: "Halloween",       ranges: [[10, 1, 10, 31]] },
+  thanksgiving: { label: "Thanksgiving",    ranges: [[11, 1, 11, 30]] },
+  holidays:     { label: "Winter holidays", ranges: [[12, 1, 12, 31]] },
+  valentine:    { label: "Valentine’s",     ranges: [[2, 1, 2, 14]] },
+  fall:         { label: "Autumn",          ranges: [[9, 15, 11, 30]] },
+  winter:       { label: "Winter",          ranges: [[12, 1, 12, 31], [1, 1, 2, 29]] },
+  spring:       { label: "Spring",          ranges: [[3, 1, 5, 31]] },
+  summer:       { label: "Summer",          ranges: [[6, 1, 9, 14]] },
+  everyday:     { label: "Any day",         ranges: [] }
+};
+
+const DOMAINS = {
+  body:  { label: "Body",  long: "Body: movement, strength, hands" },
+  mind:  { label: "Mind",  long: "Mind: senses, thinking, language" },
+  heart: { label: "Heart", long: "Heart: connection, feelings, confidence" }
+};
+
+const MILESTONES = [
+  { to: 3, label: "0–3 months", items: [
+    ["body", "Lifts her head during tummy time and moves both arms and legs"],
+    ["mind", "Watches faces and follows moving things with her eyes"],
+    ["heart", "Calms when spoken to or picked up; first social smiles around 2 months"] ] },
+  { to: 6, label: "3–6 months", items: [
+    ["body", "Holds her head steady, pushes up on her elbows, starts rolling and reaching"],
+    ["mind", "Brings things to her mouth to explore them; coos and makes sounds back at you"],
+    ["heart", "Smiles and chuckles to get your attention; knows familiar people"] ] },
+  { to: 9, label: "6–9 months", items: [
+    ["body", "Sits without support and passes objects from hand to hand"],
+    ["mind", "Looks for things that drop out of sight; babbles strings like “mamama”"],
+    ["heart", "May be wary of strangers; shows a range of feelings and reacts to yours"] ] },
+  { to: 12, label: "9–12 months", items: [
+    ["body", "Pulls to stand, cruises along furniture, picks up small things with finger and thumb"],
+    ["mind", "Puts things in and takes them out of containers; understands simple words like “no”"],
+    ["heart", "Plays games with you like peekaboo and pat‑a‑cake; waves bye‑bye"] ] },
+  { to: 18, label: "12–18 months", items: [
+    ["body", "Walks on her own, scribbles, tries to use a spoon or cup"],
+    ["mind", "Says a few words; points to show you something interesting"],
+    ["heart", "Copies you doing chores; moves away from you to explore and checks back"] ] },
+  { to: 24, label: "18–24 months", items: [
+    ["body", "Runs, kicks a ball, climbs stairs with help, eats with a spoon"],
+    ["mind", "Puts two words together; starts simple pretend play"],
+    ["heart", "Notices when others are hurt or upset; looks to your face in new situations"] ] },
+  { to: 37, label: "2–3 years", items: [
+    ["body", "Jumps with both feet, turns pages, uses her hands to twist and pour"],
+    ["mind", "Follows two‑step directions; names many things and talks in short sentences"],
+    ["heart", "Plays next to and then with other children; begins to name her own feelings"] ] }
+];
+
+/* Activities. min/max are ages in months (inclusive). */
+const ACTIVITIES = [
+  // Halloween
+  { id: "pumpkin-tummy", occ: ["halloween", "fall"], min: 1, max: 6, dom: ["body", "mind"], mins: 5,
+    title: "Pumpkin tummy time",
+    short: "Set a small pumpkin just in front of her during tummy time so she has something bright to lift her head for.",
+    need: "A small pumpkin or gourd, a blanket on the floor",
+    steps: ["Lay her on her tummy on a firm blanket while she is awake and alert.", "Place the pumpkin a little in front of her at eye level.", "Get down at her level, tap the pumpkin and tell her about it: orange, round, bumpy.", "Stop when she fusses. A few short sessions a day add up."],
+    why: "Tummy time builds the neck, shoulder and core strength she needs to roll, sit and crawl. A high‑contrast object gives her a reason to lift and turn her head.",
+    safety: "Tummy time is only for when she is awake and watched. Sleep is always on her back.",
+    src: ["tummy", "cdc"] },
+  { id: "bw-cards", occ: ["halloween"], min: 0, max: 4, dom: ["mind"], mins: 5,
+    title: "Black‑and‑white bats and ghosts",
+    short: "Draw simple bold Halloween shapes in black on white card. Newborn eyes see strong contrast best.",
+    need: "White card stock and a thick black marker",
+    steps: ["Draw big simple shapes: a bat, a ghost with two dots for eyes, a spider web, a pumpkin outline.", "Hold one card 20–30 cm (8–12 in) from her face. That is about how far she can focus.", "Move it slowly side to side and watch her eyes follow.", "Prop the cards beside her on the floor during tummy time or at changing time."],
+    why: "Montessori infant spaces start with high‑contrast visual mobiles because young babies’ color vision is still developing. Tracking a moving card practices eye coordination and attention.",
+    safety: "Keep cards out of reach once she starts grabbing and mouthing.",
+    src: ["shelf", "cdc"] },
+  { id: "pumpkin-explore", occ: ["halloween", "fall"], min: 5, max: 14, dom: ["mind", "body"], mins: 10,
+    title: "Explore a real pumpkin",
+    short: "Let her pat, scratch and push a whole pumpkin, then show her the cool, slimy inside.",
+    need: "A small pumpkin, a towel, a pumpkin you have already opened",
+    steps: ["Sit her on the floor with the whole pumpkin. Let her slap, scratch and try to lift it.", "Name what she feels: smooth, bumpy, heavy, cold. Pause and let her answer in her own way.", "Show her the inside of an opened pumpkin. Let her squish the stringy pulp with her hands.", "Wipe hands together and finish with a song."],
+    why: "Montessori favors real objects over plastic ones because they give honest information about weight, temperature and texture. Your words for what she is feeling build early vocabulary.",
+    safety: "Remove seeds first. They are a choking hazard. Stay right beside her.",
+    src: ["treasure", "harvard", "choke"] },
+  { id: "pumpkin-bag", occ: ["halloween", "fall"], min: 4, max: 12, dom: ["body", "mind"], mins: 10,
+    title: "Squishy pumpkin sensory bag",
+    short: "A sealed bag of pumpkin pulp taped to the floor or high chair tray. All the squish, none of the mess.",
+    need: "A heavy zip bag, pumpkin pulp (no seeds), packing tape",
+    steps: ["Fill the bag about a third full, squeeze out the air, seal it and tape the edge closed.", "Tape the bag flat to the floor for tummy time or to the high chair tray.", "Press it with her, draw a line through it with her finger, and talk about what moves."],
+    why: "Pressing and swiping strengthen the hands and wrists and help her learn cause and effect. On the floor, it rewards her for pushing up on her arms.",
+    safety: "Check the seal often and take it away if it leaks or she starts to chew it.",
+    src: ["tummy", "aapplay"] },
+  { id: "ghost-peekaboo", occ: ["halloween"], min: 6, max: 18, dom: ["mind", "heart"], mins: 5,
+    title: "Peekaboo ghost",
+    short: "Drape a light scarf over your head, wait, then pull it off with a smile. Then let her try.",
+    need: "A thin scarf or muslin cloth",
+    steps: ["Put the scarf over your head and say “Where did Mama go?” in a soft spooky voice.", "Pause for her reaction, then whip it off: “Boo! Here I am!”", "Hide a toy under the scarf and let her pull it off.", "Put the scarf lightly over her head and let her pull it off herself."],
+    why: "Around 8–9 months babies learn that things still exist when hidden, which the CDC lists as a 9‑month milestone. Peekaboo practices that idea and the rhythm of taking turns, which builds connection.",
+    safety: "Use a thin, breathable cloth and never leave it with her.",
+    src: ["cdc", "harvard"] },
+  { id: "orange-black-basket", occ: ["halloween"], min: 5, max: 12, dom: ["mind", "body"], mins: 15,
+    title: "Orange and black treasure basket",
+    short: "A low basket of safe household objects in Halloween colors for her to explore at her own pace.",
+    need: "A low basket and 5–8 safe objects: an orange wooden spoon, a black silicone whisk, an orange felt ball, a small gourd, a black sock",
+    steps: ["Pick objects with different textures, weights and sounds.", "Sit her beside the basket in a calm, uncluttered spot when she is fed and rested.", "Let her choose and explore. Watch rather than demonstrate.", "Name objects when she shows you one."],
+    why: "Treasure baskets are a Montessori staple for this age. Letting her pick, hold and mouth real objects builds concentration, grasp and the habit of exploring on her own.",
+    safety: "Every item must be too big to fit through a toilet paper tube. Stay with her.",
+    src: ["treasure", "choke"] },
+  { id: "pumpkin-roll", occ: ["halloween", "fall"], min: 9, max: 20, dom: ["body", "heart"], mins: 10,
+    title: "Pumpkin roll",
+    short: "Roll a small round pumpkin back and forth across the floor and let her crawl or toddle after it.",
+    need: "A small, round pumpkin and a clear floor",
+    steps: ["Sit facing her, legs out, and gently roll the pumpkin to her.", "Cheer when she pushes it back, even if it goes sideways.", "Once she is crawling or walking, roll it a little past her so she has to go get it."],
+    why: "Chasing a slow, wobbly object motivates crawling and cruising. Rolling it back and forth is a game of serve and return.",
+    safety: "Use a pumpkin light enough that it won’t hurt if it rolls onto fingers.",
+    src: ["harvard", "cdc"] },
+  { id: "costume-mirror", occ: ["halloween"], min: 6, max: 30, dom: ["heart", "mind"], mins: 10,
+    title: "Costume mirror play",
+    short: "Try on a hat or cape together in front of a mirror, keeping faces visible, and make silly expressions.",
+    need: "A mirror, a hat, cape, or animal ears",
+    steps: ["Sit in front of a mirror together.", "Put a hat on yourself first so she sees it is still you.", "Offer her the hat. Let her pull it off and put it back on.", "Make faces in the mirror: surprised, happy, silly. Name each one."],
+    why: "Seeing a familiar face in a costume helps her get used to Halloween looks without fear. Copying faces in a mirror is early emotional literacy.",
+    safety: "Skip masks with babies and young toddlers. Covered faces can be scary, and stranger wariness peaks around 8–18 months.",
+    src: ["cdc", "harvard"] },
+  { id: "pumpkin-wash", occ: ["halloween", "fall"], min: 15, max: 36, dom: ["body", "mind"], mins: 20,
+    title: "Pumpkin washing station",
+    short: "A tub of water, a scrub brush and a few small pumpkins. A Montessori practical life job she can do herself.",
+    need: "A shallow tub, a small brush or sponge, mini pumpkins, a towel",
+    steps: ["Set up on the floor or a low table with a towel underneath.", "Show her slowly, without talking, how to dip, scrub and dry one pumpkin.", "Hand her the brush and let her work. Resist the urge to fix it.", "Line up the clean pumpkins on a windowsill together."],
+    why: "Montessori practical life work, meaning real tasks with real tools, builds hand control, concentration and a sense of “I can do it.” Toddlers copying chores is a CDC 15‑month milestone.",
+    safety: "Stay within arm’s reach around any water, even a few centimeters.",
+    src: ["shelf", "cdc", "water"] },
+  { id: "feelings-pumpkins", occ: ["halloween"], min: 18, max: 36, dom: ["heart", "mind"], mins: 15,
+    title: "Feelings jack‑o’‑lanterns",
+    short: "Draw faces on paper pumpkins: happy, sad, surprised, grumpy. Act each one out together.",
+    need: "Orange paper circles and a marker",
+    steps: ["Draw a different face on each paper pumpkin.", "Hold one up and make that face yourself. Ask “Can you make a happy face?”", "Talk about when people feel that way: “You felt sad when the ball rolled away.”", "Let her pick a pumpkin to match how she feels right now."],
+    why: "Naming feelings helps toddlers recognize and later manage them. Noticing others’ feelings emerges around 18–24 months.",
+    safety: "",
+    src: ["cdc", "aapplay"] },
+  { id: "five-pumpkins", occ: ["halloween", "fall"], min: 3, max: 30, dom: ["mind", "heart"], mins: 5,
+    title: "Pumpkin fingerplay and bounce",
+    short: "Sing a counting rhyme like “Five Little Pumpkins” while bouncing her on your knee or counting her fingers.",
+    need: "Just you",
+    steps: ["Hold her on your lap facing you.", "Sing slowly and touch one finger per pumpkin.", "Add a gentle bounce or a “whoosh” lift at the end.", "Repeat it. Babies love knowing what comes next."],
+    why: "Rhymes and repetition build the sound patterns of language, and the predictable ending teaches anticipation. Shared rhythm is relaxing for both of you.",
+    safety: "",
+    src: ["aapread", "harvard"] },
+  { id: "decor-walk", occ: ["halloween"], min: 0, max: 36, dom: ["mind", "heart"], mins: 20,
+    title: "Neighborhood pumpkin walk",
+    short: "Take a stroller or carrier walk past decorated porches and narrate what you see.",
+    need: "Stroller or carrier, weather‑appropriate layers",
+    steps: ["Walk slowly and stop at houses with pumpkins or decorations.", "Point and name: “Look, a big orange pumpkin! And a black cat.”", "For toddlers, play “find the orange” or count pumpkins.", "Notice her reaction. If something looks scary to her, name it and move on calmly."],
+    why: "Following her gaze and naming what she sees is the core of serve and return. Fresh air and new sights are good for mood and sleep.",
+    safety: "Skip houses with loud animatronics if she startles easily.",
+    src: ["harvard", "aapplay"] },
+  { id: "tee-hammer", occ: ["halloween", "fall"], min: 24, max: 36, dom: ["body", "mind"], mins: 15,
+    title: "Hammer golf tees into a pumpkin",
+    short: "A toddler‑safe “carving” job. Push or tap golf tees into a soft pumpkin with a toy hammer.",
+    need: "A pumpkin, plastic golf tees, a toy wooden hammer",
+    steps: ["Poke starter holes with a skewer so the tees go in easily.", "Show her how to push a tee in with her fingers first.", "Then let her tap it in with the hammer.", "Pull them all out at the end. That is fine‑motor work too."],
+    why: "Holding a small tee while tapping with the other hand builds two‑handed coordination and hand strength she’ll later use to draw and write.",
+    safety: "Golf tees are small. Count them in and out and supervise closely.",
+    src: ["aapplay", "choke"] },
+  { id: "trick-treat-practice", occ: ["halloween"], min: 15, max: 36, dom: ["heart", "mind"], mins: 10,
+    title: "Trick‑or‑treat practice",
+    short: "Rehearse at home with stuffed animals: knock, the door opens, say hi, get a treat, say thank you.",
+    need: "A door, stuffed animals, a small basket, a few toys or crackers as “treats”",
+    steps: ["Seat stuffed animals behind a door.", "Help her knock. Open the door with a cheerful voice.", "Have the animal put a toy in her basket. Model “thank you” and a wave.", "Swap roles so she gets to be the one giving."],
+    why: "Practicing a new event in play makes the real thing feel familiar and less overwhelming. Taking turns as giver also builds early empathy.",
+    safety: "",
+    src: ["aapplay", "cdc"] },
+  { id: "gourd-shakers", occ: ["halloween", "fall", "thanksgiving"], min: 6, max: 24, dom: ["body", "mind"], mins: 10,
+    title: "Gourd shaker band",
+    short: "Dried gourds rattle like maracas. Shake them to music and take turns.",
+    need: "Two or three dried gourds (or rice sealed in a bottle with the lid glued shut)",
+    steps: ["Shake one and wait for her to reach for it.", "Put on a song and shake to the beat together.", "Play stop‑and‑go: shake, freeze, shake."],
+    why: "Shaking builds grip and arm control, and hearing a sound she made teaches cause and effect. Stop‑and‑go games are early self‑control practice.",
+    safety: "Check gourds for cracks so seeds can’t come out.",
+    src: ["aapplay", "choke"] },
+  { id: "pumpkin-paint", occ: ["halloween", "fall", "thanksgiving"], min: 6, max: 18, dom: ["body", "mind"], mins: 15,
+    title: "Pumpkin purée finger painting",
+    short: "Plain cooked pumpkin on the high chair tray to smear, taste and draw in.",
+    need: "Plain cooked pumpkin purée, high chair, a bib",
+    steps: ["Spoon a few dollops directly on a clean tray.", "Let her squish and smear. Draw a line or circle with your finger.", "Name what she is doing: “You made a big swirl!”", "Tasting is part of it."],
+    why: "Messy, hands‑on food play makes new tastes and textures familiar, which can help with eating. Smearing strengthens the hand and arm.",
+    safety: "Only if she has started solids. Offer plain purée with nothing added.",
+    src: ["aapplay"] },
+
+  // Autumn
+  { id: "leaf-crunch", occ: ["fall"], min: 3, max: 12, dom: ["mind", "body"], mins: 10,
+    title: "Leaf crunch",
+    short: "Collect a few big dry leaves and let her hear them crunch, wave them, and feel the crinkly edges.",
+    need: "A handful of large, clean, dry leaves",
+    steps: ["Crunch a leaf near her ear and watch for her reaction.", "Brush a leaf softly on her hand and foot.", "Hand her one to hold and crush.", "Outside, lay her on a blanket under a tree and watch the leaves move."],
+    why: "New sounds and textures feed sensory development, and reaching for a moving leaf practices hand‑eye coordination.",
+    safety: "Leaves crumble into mouth‑sized bits. Watch and take them away when she starts mouthing.",
+    src: ["aapplay", "cdc"] },
+  { id: "leaf-wall", occ: ["fall", "thanksgiving"], min: 12, max: 30, dom: ["body", "mind"], mins: 15,
+    title: "Sticky leaf wall",
+    short: "Tape contact paper sticky side out on a wall at her height and let her stick leaves on.",
+    need: "Clear contact paper, painter’s tape, leaves you collected together",
+    steps: ["Collect leaves on a walk. Let her carry the bag.", "Tape contact paper to the wall, sticky side out, at her standing height.", "Show her how to press a leaf on. Then let her go.", "Talk about colors and sizes: big, little, red, yellow."],
+    why: "Peeling and pressing build the pincer grasp. Standing at the wall builds balance for new walkers.",
+    safety: "",
+    src: ["aapplay", "cdc"] },
+  { id: "apple-taste", occ: ["fall"], min: 6, max: 24, dom: ["mind", "body"], mins: 15,
+    title: "Apple exploration",
+    short: "Two or three different apples to hold, roll, smell, and taste once they are soft‑cooked.",
+    need: "Red, green and yellow apples; one cut and steamed until soft",
+    steps: ["Let her hold and roll the whole apples. Talk about the colors.", "Cut one open and let her smell it.", "Offer steamed soft wedges to taste.", "Toddlers can help wash them and put them in a bowl."],
+    why: "Hands‑on contact with real food builds curiosity about eating and gives her words for colors and tastes.",
+    safety: "Raw, hard apple pieces are a choking hazard for babies and toddlers. Offer soft‑cooked apple only.",
+    src: ["choke", "harvard"] },
+  { id: "nature-sort", occ: ["fall", "spring"], min: 20, max: 36, dom: ["mind", "body"], mins: 15,
+    title: "Nature sorting tray",
+    short: "Sort a walk’s finds into a muffin tin: pinecones here, leaves there, big sticks over here.",
+    need: "A muffin tin or egg carton, pinecones, big leaves, sticks",
+    steps: ["Gather finds on a walk together.", "Put one of each kind in its own cup to start.", "Ask “Where does this one go?” and let her decide.", "It’s okay if her sort makes sense only to her."],
+    why: "Sorting is early math thinking: same, different, more. Montessori calls this matching and classification work.",
+    safety: "Skip acorns, berries and anything small. Wash hands afterward.",
+    src: ["shelf", "choke"] },
+  { id: "leaf-pile", occ: ["fall"], min: 12, max: 36, dom: ["body", "heart"], mins: 20,
+    title: "Leaf pile jump",
+    short: "Rake a small pile together, then walk, stomp and fall into it.",
+    need: "A rake, a leafy yard or park",
+    steps: ["Let her help rake or carry armfuls.", "Show her how to stomp and crunch.", "Hold her hands and help her “jump” or plop in.", "Bury her feet and let her kick free."],
+    why: "Big body play builds balance, coordination and confidence. Laughing together releases stress for both of you.",
+    safety: "Check the pile for sticks and anything sharp first.",
+    src: ["aapplay"] },
+  { id: "breeze-scarf", occ: ["fall", "spring"], min: 2, max: 12, dom: ["mind", "body"], mins: 5,
+    title: "Scarf in the breeze",
+    short: "Hold a bright scarf where she can see it and let the wind make it dance.",
+    need: "A bright, light scarf",
+    steps: ["Sit outside or by an open window.", "Hold the scarf up and let it ripple.", "Slowly bring it closer so she can reach and grab.", "Let it float down on her tummy."],
+    why: "Following a moving object trains visual tracking. Reaching and grabbing it is a 4–6 month motor milestone.",
+    safety: "Never leave fabric with her unattended.",
+    src: ["cdc"] },
+
+  // Thanksgiving
+  { id: "photo-book", occ: ["thanksgiving", "holidays"], min: 9, max: 36, dom: ["heart", "mind"], mins: 10,
+    title: "Family photo book",
+    short: "Print photos of the people she’ll see at the holiday and look through them together before the visit.",
+    need: "Printed photos in a small album, or a phone",
+    steps: ["Gather a photo of each relative or friend she’ll see.", "Look through them daily for a week before. Say each name.", "Point to her too: “That’s you with Grandma!”", "Bring the book along so she can look while she warms up."],
+    why: "Wariness of strangers is normal from around 8 months. Seeing faces ahead of time helps them feel familiar and gives her words for the people she loves.",
+    safety: "",
+    src: ["cdc", "aapread"] },
+  { id: "kitchen-helper", occ: ["thanksgiving", "holidays"], min: 18, max: 36, dom: ["body", "heart"], mins: 15,
+    title: "Little kitchen helper",
+    short: "Give her a real job: scrubbing potatoes, tearing lettuce, or stirring a cold bowl.",
+    need: "A learning tower or sturdy chair, a small brush, potatoes or lettuce",
+    steps: ["Pick one simple task away from the stove.", "Show her slowly, then step back.", "Thank her for helping the family.", "Serve what she prepared and tell everyone she made it."],
+    why: "Montessori practical life work shows toddlers they are capable, contributing members of the family, which builds confidence and focus.",
+    safety: "Keep knives, hot pans and the stove well out of reach.",
+    src: ["shelf", "aapplay"] },
+  { id: "warm-up-lap", occ: ["thanksgiving", "holidays"], min: 6, max: 24, dom: ["heart"], mins: 10,
+    title: "Slow warm‑up with relatives",
+    short: "Hold her on your lap while family says hi. Let her decide when to go to someone new.",
+    need: "A calm corner, a favorite toy",
+    steps: ["Arrive a little early, before the room gets loud.", "Keep her on your lap and chat warmly with each relative so she sees you trust them.", "Ask the relative to offer a toy instead of reaching for her.", "If she clings, that’s okay. Try again later."],
+    why: "Babies check your face to decide whether a new person is safe. Letting her set the pace builds trust and secure attachment.",
+    safety: "",
+    src: ["harvard", "cdc"] },
+  { id: "feather-tickle", occ: ["thanksgiving"], min: 2, max: 12, dom: ["mind", "heart"], mins: 5,
+    title: "Turkey feather tickle",
+    short: "Brush a big craft feather over her hands, feet and tummy, naming each body part.",
+    need: "One large craft feather",
+    steps: ["Lay her on her back facing you.", "Brush the feather on her hand: “Here’s your hand!”", "Move to feet, tummy, cheeks. Pause between for her to react.", "Watch her cues. Stop if she turns away."],
+    why: "Gentle touch with your face and voice is calming and connecting. Naming body parts builds early words.",
+    safety: "Keep the feather in your hand. Loose feathers and fluff are choking hazards.",
+    src: ["harvard", "choke"] },
+  { id: "handprint-paint", occ: ["thanksgiving", "valentine"], min: 12, max: 36, dom: ["body", "mind"], mins: 15,
+    title: "Paint with hands and feet",
+    short: "Washable paint and big paper. Let her squish and stamp, and let what she makes be hers.",
+    need: "Washable non‑toxic paint, big paper, a wipe nearby",
+    steps: ["Tape paper to the floor or high chair tray.", "Put a little paint in a shallow plate.", "Let her dip and stamp. Talk about colors.", "Name it together and hang it at her eye level."],
+    why: "Open‑ended art builds hand strength and creativity. Displaying her work at her height says it matters.",
+    safety: "Use paints labeled non‑toxic for young children.",
+    src: ["aapplay"] },
+
+  // Winter holidays
+  { id: "light-watch", occ: ["holidays", "winter"], min: 0, max: 6, dom: ["mind", "heart"], mins: 5,
+    title: "Twinkle light watching",
+    short: "In a dim room, hold her where she can see holiday lights and talk softly about them.",
+    need: "String lights or a decorated tree, a dim room",
+    steps: ["Hold her facing the lights from a little distance.", "Move slowly from one cluster to another and watch her eyes.", "Sing or hum quietly.", "Keep it short. Lights can be a lot for a new baby."],
+    why: "Following points of light trains visual tracking and focus. The quiet closeness is calming.",
+    safety: "Keep cords and bulbs out of reach.",
+    src: ["cdc"] },
+  { id: "paper-crinkle", occ: ["holidays"], min: 3, max: 12, dom: ["mind", "body"], mins: 5,
+    title: "Wrapping paper crinkle",
+    short: "Crinkle a sheet of tissue or wrapping paper and let her grab, squeeze and listen.",
+    need: "A sheet of wrapping or tissue paper",
+    steps: ["Crinkle it near her and pause for her reaction.", "Hand her a sheet and let her squeeze.", "Wave it slowly so she follows the sound."],
+    why: "Grabbing and squeezing a noisy material teaches cause and effect and strengthens the hands.",
+    safety: "Paper tears into chewable bits. Stay close and take it away when she starts mouthing.",
+    src: ["aapplay", "choke"] },
+  { id: "unwrap", occ: ["holidays"], min: 9, max: 30, dom: ["body", "mind"], mins: 10,
+    title: "Unwrap a surprise",
+    short: "Loosely wrap a favorite toy she already knows and let her find it.",
+    need: "A familiar toy, paper, a little tape",
+    steps: ["Wrap a familiar toy loosely with only a bit of tape.", "Start a corner tear for her.", "Wait. Let her work on it.", "Celebrate the reveal: “It’s your duck!”"],
+    why: "Finding a hidden toy builds object permanence. Peeling and tearing build the pincer grasp. A familiar toy makes the surprise happy instead of overwhelming.",
+    safety: "Skip ribbon and small bows.",
+    src: ["cdc", "choke"] },
+  { id: "bell-bottle", occ: ["holidays", "winter"], min: 4, max: 12, dom: ["mind", "body"], mins: 5,
+    title: "Jingle bell bottle",
+    short: "Bells sealed inside a small plastic bottle make a holiday rattle she can roll and shake.",
+    need: "A small clear plastic bottle, jingle bells, strong glue",
+    steps: ["Put bells inside and glue the lid shut. Let it dry overnight.", "Shake it and let her reach for it.", "During tummy time, roll it just out of reach."],
+    why: "A see‑through rattle shows her how the sound is made. Rolling it away gives her a reason to reach and scoot.",
+    safety: "Check the lid every time. Loose bells are a choking hazard.",
+    src: ["choke", "tummy"] },
+  { id: "dance-party", occ: ["holidays", "everyday"], min: 6, max: 36, dom: ["body", "heart"], mins: 10,
+    title: "Kitchen dance party",
+    short: "Put on music and sway, bounce and spin together. Toddlers can play freeze dance.",
+    need: "Music",
+    steps: ["Hold younger babies close and sway to the beat.", "Bounce at the knees to faster songs.", "For toddlers, pause the music and freeze. Then go again.", "Follow her moves too."],
+    why: "Moving to music builds rhythm, balance and body awareness. Freeze dance practices stopping on cue, an early form of self‑control.",
+    safety: "",
+    src: ["aapplay"] },
+  { id: "giving-toy", occ: ["holidays"], min: 24, max: 36, dom: ["heart"], mins: 15,
+    title: "Choose a gift to give",
+    short: "Let her help pick, wrap and hand over a small gift for someone she loves.",
+    need: "A small gift, paper and tape",
+    steps: ["Offer two choices of gift for a grandparent or friend.", "Let her put on stickers or scribble on the paper.", "Practice handing it over and saying “This is for you.”", "Afterward, talk about how happy the person looked."],
+    why: "Giving and noticing someone else’s happiness builds early empathy and generosity.",
+    safety: "",
+    src: ["cdc", "aapplay"] },
+  { id: "felt-tree", occ: ["holidays"], min: 18, max: 36, dom: ["body", "mind"], mins: 15,
+    title: "Felt tree to decorate",
+    short: "A felt tree on the wall with felt shapes she can stick on and pull off again and again.",
+    need: "Green felt tree on the wall, colored felt shapes (circles, stars)",
+    steps: ["Tape the tree at her height.", "Show her how felt sticks to felt.", "Name colors and shapes as she places them.", "Leave it up all season so she can come back to it."],
+    why: "A “yes” tree she can touch gives her a holiday job of her own. Placing shapes builds fine motor control and shape and color words.",
+    safety: "Cut shapes larger than 5 cm (2 in).",
+    src: ["shelf", "choke"] },
+
+  // Winter
+  { id: "snow-bin", occ: ["winter"], min: 9, max: 36, dom: ["body", "mind"], mins: 15,
+    title: "Snow indoors",
+    short: "Bring a tub of snow inside and play on a towel with cups and spoons.",
+    need: "A tub of clean snow, cups, scoops, mittens, a towel",
+    steps: ["Put the tub on a towel on the floor or high chair tray.", "Let her touch it bare‑handed first, then offer mittens.", "Scoop, pour and pat together.", "Watch it melt and talk about cold and wet."],
+    why: "Snow feels cold, crunchy, then wet. Scooping builds hand control and gives her real‑world science.",
+    safety: "Short sessions. Warm her hands afterward.",
+    src: ["aapplay"] },
+  { id: "ice-rescue", occ: ["winter", "summer"], min: 15, max: 36, dom: ["mind", "body"], mins: 20,
+    title: "Ice toy rescue",
+    short: "Freeze a few toys in a container of water, then use warm water and spoons to free them.",
+    need: "A container, a few chunky bath toys, a cup of warm water, spoons",
+    steps: ["Freeze the toys in water overnight.", "Pop out the ice block into a tray.", "Give her a cup of warm water and a spoon. Pour and chip together.", "Cheer each toy you free."],
+    why: "Seeing ice melt is hands‑on cause and effect. Pouring builds control, and sticking with it builds patience.",
+    safety: "Use toys too big to swallow. Stay with her around water.",
+    src: ["water", "aapplay"] },
+  { id: "warm-cold", occ: ["winter"], min: 6, max: 18, dom: ["mind"], mins: 5,
+    title: "Warm and cool washcloths",
+    short: "Offer one comfortably warm and one cool washcloth and name the difference.",
+    need: "Two washcloths and two bowls of water",
+    steps: ["Dip one cloth in warm (not hot) water and one in cool. Wring them out.", "Touch the warm one to her hand: “Warm.” Then the cool one: “Cool.”", "Let her grab and squeeze them."],
+    why: "Contrasting sensations, paired with words, help her sort the world into categories. It’s early concept learning.",
+    safety: "Test the warm cloth on your inner wrist first.",
+    src: ["harvard"] },
+  { id: "blanket-ride", occ: ["winter", "everyday"], min: 9, max: 30, dom: ["body", "heart"], mins: 10,
+    title: "Blanket sled ride",
+    short: "Sit her on a blanket and pull her slowly across a smooth floor.",
+    need: "A blanket and a smooth floor",
+    steps: ["Seat her in the middle of the blanket.", "Pull slowly in a straight line and watch her balance.", "Try gentle curves once she’s steady.", "Stop and ask “More?” Wait for her sign or word."],
+    why: "Keeping her balance while moving strengthens her core. Waiting for her to ask for “more” is early communication.",
+    safety: "Go slow, and only on clear, smooth floors away from stairs.",
+    src: ["aapplay", "harvard"] },
+  { id: "coat-flip", occ: ["winter"], min: 24, max: 36, dom: ["body", "heart"], mins: 5,
+    title: "Montessori coat flip",
+    short: "Teach her to put on her own coat by laying it on the floor and flipping it over her head.",
+    need: "Her coat",
+    steps: ["Lay the coat open on the floor, inside facing up, hood by her feet.", "She stands at the hood, puts her arms in the sleeves.", "She lifts her arms up and over her head, and the coat flips on.", "Practice when you are not in a hurry."],
+    why: "Doing it herself is a core Montessori idea. Self‑care tasks build coordination and a strong sense of independence.",
+    safety: "",
+    src: ["shelf"] },
+  { id: "book-nest", occ: ["winter", "everyday"], min: 0, max: 36, dom: ["mind", "heart"], mins: 10,
+    title: "Cozy book nest",
+    short: "Make a pile of pillows and blankets and read together, pointing and naming pictures.",
+    need: "Pillows, a blanket, a few board books",
+    steps: ["Snuggle in together.", "For babies, books with faces and bold pictures. Point and name.", "For toddlers, ask “What’s that?” and wait.", "Let her turn pages, even backward."],
+    why: "The AAP recommends reading aloud from birth. Shared books build vocabulary and attention, and the closeness strengthens your bond.",
+    safety: "",
+    src: ["aapread"] },
+
+  // Valentine's
+  { id: "heart-faces", occ: ["valentine", "everyday"], min: 0, max: 9, dom: ["heart", "mind"], mins: 5,
+    title: "Face‑to‑face conversation",
+    short: "Hold her close, make a face or sound, and wait for her to “answer.” Then copy what she does.",
+    need: "Just you",
+    steps: ["Hold her 20–30 cm (8–12 in) from your face.", "Smile, open your mouth wide or coo, then pause.", "When she moves or makes a sound, copy it back.", "Keep going as long as she’s engaged, and stop when she looks away."],
+    why: "This is serve and return in its simplest form. These back‑and‑forth moments build the brain’s connections for language and relationships.",
+    safety: "",
+    src: ["harvard", "cdc"] },
+  { id: "red-basket", occ: ["valentine"], min: 5, max: 12, dom: ["mind", "body"], mins: 15,
+    title: "Red and pink treasure basket",
+    short: "A basket of safe red and pink things to explore: a silicone heart mold, a red scarf, a pink cup.",
+    need: "A low basket and 5–8 safe red or pink objects",
+    steps: ["Choose a mix of textures: soft, hard, crinkly, smooth.", "Set it out when she’s rested and fed.", "Let her lead. Name an object when she holds it up."],
+    why: "A themed treasure basket keeps her focused on a few real objects and lets her explore at her own pace, a Montessori favorite for this age.",
+    safety: "Every item must be too big to fit through a toilet paper tube.",
+    src: ["treasure", "choke"] },
+  { id: "heart-stickers", occ: ["valentine"], min: 18, max: 36, dom: ["body"], mins: 10,
+    title: "Heart sticker peel",
+    short: "Big heart stickers to peel off a sheet and stick onto paper.",
+    need: "Large heart stickers, paper",
+    steps: ["Lift the edge of each sticker a little to get her started.", "Show her how to peel and press.", "Let her decide where they go."],
+    why: "Peeling stickers is great pincer‑grasp practice, the same finger‑and‑thumb control she’ll use for drawing and buttoning.",
+    safety: "Watch for stickers going into mouths.",
+    src: ["cdc", "choke"] },
+  { id: "love-cards", occ: ["valentine"], min: 15, max: 36, dom: ["heart", "body"], mins: 15,
+    title: "Cards for people she loves",
+    short: "Scribble, stamp or paint cards to mail to grandparents or friends.",
+    need: "Folded card stock, chunky crayons or washable stamps",
+    steps: ["Tell her who each card is for and show a photo.", "Let her scribble or stamp however she likes.", "Write her words inside if she has some.", "Let her put it in the envelope or mailbox."],
+    why: "Scribbling is a CDC 15‑month milestone. Making something for someone else helps her understand caring for others.",
+    safety: "",
+    src: ["cdc"] },
+  { id: "baby-massage", occ: ["valentine", "everyday"], min: 0, max: 12, dom: ["heart", "body"], mins: 10,
+    title: "“I love your toes” massage",
+    short: "After a bath, gently massage her arms, legs and feet while singing or naming each part.",
+    need: "A warm room, a towel, a little unscented baby oil (optional)",
+    steps: ["Choose a time she’s calm and alert, not hungry or sleepy.", "Use slow, gentle strokes from her thighs down to her toes.", "Name each part: “I love your knees. I love your toes.”", "Watch her cues. Stop if she arches away or fusses."],
+    why: "Warm, responsive touch is calming and helps regulate her body. Pairing it with words and eye contact builds connection and early vocabulary.",
+    safety: "Check with your pediatrician before using any oil on newborn or sensitive skin.",
+    src: ["harvard"] },
+
+  // Spring
+  { id: "grass-feet", occ: ["spring", "summer"], min: 4, max: 14, dom: ["body", "mind"], mins: 10,
+    title: "Feet in the grass",
+    short: "Hold her so her bare feet touch cool grass, and watch her reaction.",
+    need: "A clean patch of grass, a blanket",
+    steps: ["Hold her under the arms and let her toes brush the grass.", "Let her stand and bounce if she wants.", "Sit her on the blanket edge and let her pat the grass with her hands."],
+    why: "Bare feet send lots of information to the brain about balance and surfaces, which helps when she learns to stand and walk.",
+    safety: "Check for sharp objects, bees and recently treated lawns.",
+    src: ["aapplay"] },
+  { id: "plant-seeds", occ: ["spring"], min: 18, max: 36, dom: ["mind", "body"], mins: 20,
+    title: "Plant a bean in a cup",
+    short: "Scoop soil, push in a big bean seed, water it, and check on it every day.",
+    need: "A clear cup, soil, large bean seeds, a small watering can",
+    steps: ["Let her scoop soil into the cup.", "Push the seed in with one finger.", "Water a little each day together.", "Look through the clear cup for roots."],
+    why: "Caring for a living thing is classic Montessori work. It builds responsibility, patience and early science.",
+    safety: "Seeds are a choking hazard. You hold the packet. Wash hands afterward.",
+    src: ["shelf", "choke"] },
+  { id: "bird-window", occ: ["spring", "winter"], min: 4, max: 24, dom: ["mind", "heart"], mins: 10,
+    title: "Window bird watching",
+    short: "Sit by a window where birds visit. Point, name and copy their sounds.",
+    need: "A window, optional bird feeder outside",
+    steps: ["Hold her by the window.", "When a bird lands, point and say “Bird! Tweet tweet.”", "Wait to see if she looks where you’re pointing.", "For toddlers, ask her to show you the bird."],
+    why: "Looking where you point, and later pointing herself (a CDC 15‑month milestone), is called joint attention, a key building block for language.",
+    safety: "",
+    src: ["cdc", "harvard"] },
+  { id: "puddle-stomp", occ: ["spring", "fall"], min: 15, max: 36, dom: ["body", "heart"], mins: 20,
+    title: "Puddle stomp",
+    short: "Rain boots on, find the puddles and stomp.",
+    need: "Rain boots, a rain jacket, a dry change of clothes",
+    steps: ["Head out after it rains.", "Hold her hands for the first stomp.", "Try big splashes and tiny tiptoe ones.", "Listen to the rain together and name the sounds."],
+    why: "Jumping and stomping build leg strength and balance. Joyful outdoor play is good for mood and sleep.",
+    safety: "Avoid deep puddles or any near traffic.",
+    src: ["aapplay", "water"] },
+  { id: "flower-arrange", occ: ["spring", "valentine"], min: 24, max: 36, dom: ["body", "heart"], mins: 15,
+    title: "Flower arranging",
+    short: "A Montessori classic: a small vase, a jug of water, and a few flowers she arranges herself.",
+    need: "A small sturdy vase, a little jug, a few short flowers, a sponge",
+    steps: ["Show her slowly how to pour water into the vase.", "Let her choose a flower and put it in.", "Show her how to wipe up spills with the sponge.", "Let her place the vase on the table for the family."],
+    why: "Pouring, placing and cleaning up build careful hand control and pride in caring for her home.",
+    safety: "Use non‑toxic flowers, and an unbreakable vase.",
+    src: ["shelf"] },
+  { id: "egg-hide", occ: ["spring"], min: 9, max: 24, dom: ["mind", "body"], mins: 10,
+    title: "Hide it in an egg",
+    short: "Open a big plastic egg, put a familiar toy inside, close it, and let her find it.",
+    need: "Large plastic eggs, small toys bigger than a toilet paper tube is wide",
+    steps: ["Show her the toy, then hide it in the egg.", "Shake it: “Where did it go?”", "Help her pull the egg open.", "Toddlers can match egg halves by color."],
+    why: "Hiding and finding builds object permanence, and pulling the egg apart builds two‑handed coordination.",
+    safety: "Large eggs only, with toys too big to swallow.",
+    src: ["cdc", "choke"] },
+
+  // Summer
+  { id: "water-tray", occ: ["summer"], min: 6, max: 24, dom: ["body", "mind"], mins: 15,
+    title: "Shallow water play",
+    short: "A baking tray with a little water, cups and a sponge. Splash, pour and squeeze.",
+    need: "A baking tray or shallow tub, cups, a sponge, a towel",
+    steps: ["Pour in only a couple of centimeters of water.", "Sit her beside it, in shade if outside.", "Show her how to squeeze the sponge and pour from a cup.", "Let her splash."],
+    why: "Pouring and squeezing build hand strength and coordination, and watching water move is hands‑on science.",
+    safety: "A baby can drown in very little water. Stay within arm’s reach the whole time and empty it right after.",
+    src: ["water", "aapplay"] },
+  { id: "shade-tummy", occ: ["summer", "spring"], min: 0, max: 6, dom: ["body", "mind"], mins: 10,
+    title: "Shady tummy time outdoors",
+    short: "Tummy time on a blanket under a tree, with leaves moving overhead and birds to listen to.",
+    need: "A blanket in full shade, a sun hat",
+    steps: ["Find deep shade, not just partial.", "Lay her on her tummy or side and lie beside her.", "Talk about what she might hear and see.", "Roll her onto her back to watch the leaves."],
+    why: "Outdoor sights and sounds give her lots to lift her head for. Tummy time builds strength for rolling and sitting.",
+    safety: "The AAP advises keeping babies under 6 months out of direct sun. Use shade and light clothing rather than sunscreen.",
+    src: ["sun", "tummy"] },
+  { id: "sand-play", occ: ["summer"], min: 12, max: 36, dom: ["body", "mind"], mins: 20,
+    title: "Sand scoop and pour",
+    short: "Buckets, scoops and damp sand. Fill, dump, pat and repeat.",
+    need: "Sandbox or beach, a bucket, scoops, a funnel",
+    steps: ["Dampen the sand so it holds shape.", "Show her how to fill and dump the bucket.", "Pat a sand cake together and let her knock it down.", "Add a funnel for older toddlers."],
+    why: "Filling and emptying is exactly the kind of in‑and‑out play toddlers seek out. It builds hand strength, and they learn about full and empty.",
+    safety: "Watch for sand going into mouths and eyes. Sun hat and shade.",
+    src: ["aapplay", "sun"] },
+  { id: "frozen-feeder", occ: ["summer"], min: 6, max: 18, dom: ["body"], mins: 10,
+    title: "Frozen fruit in a mesh feeder",
+    short: "A cool treat that soothes teething gums and lets her practice feeding herself.",
+    need: "A mesh or silicone feeder, frozen fruit such as banana or melon",
+    steps: ["Put frozen fruit in the feeder and close it.", "Let her hold it and chew.", "Sit with her and name the fruit."],
+    why: "Holding and bringing it to her mouth builds hand‑to‑mouth coordination for self‑feeding, and the cold soothes sore gums.",
+    safety: "Only once she has started solids. Sit with her the whole time.",
+    src: ["choke"] },
+  { id: "bubbles", occ: ["summer", "everyday"], min: 3, max: 36, dom: ["mind", "body"], mins: 10,
+    title: "Bubble chase",
+    short: "Blow bubbles for her to watch, reach for, pop and chase.",
+    need: "Bubble solution and a wand",
+    steps: ["For young babies, blow slowly so bubbles drift past her eyes.", "For sitters, blow toward her hands so she can reach.", "For walkers, blow them ahead so she chases.", "Pause and wait for her to ask for more, with a sound, sign or word."],
+    why: "Bubbles train visual tracking and reaching. The pause to request “more” builds communication.",
+    safety: "Keep solution away from her eyes and mouth.",
+    src: ["cdc", "harvard"] },
+  { id: "hose-rainbow", occ: ["summer"], min: 12, max: 36, dom: ["body", "heart"], mins: 15,
+    title: "Sprinkler run",
+    short: "A gentle sprinkler or hose mist to run through, watch, and splash in.",
+    need: "A sprinkler or hose on mist, a swimsuit",
+    steps: ["Start with a fine mist and let her watch.", "Hold her hand and walk through together.", "Let her decide whether to go again.", "Look for a rainbow in the spray on sunny days."],
+    why: "Running in and out of water is joyful big‑body play. Letting her choose how close to get builds confidence.",
+    safety: "Test the water first, since hoses heat up in the sun. Use sunscreen if she is over 6 months.",
+    src: ["sun", "aapplay"] },
+  { id: "pouring", occ: ["summer", "everyday"], min: 18, max: 36, dom: ["body", "mind"], mins: 10,
+    title: "Pouring practice",
+    short: "A small pitcher and a cup on a tray. Pour, spill, wipe, try again.",
+    need: "A small child‑sized pitcher, a cup, a tray, a sponge",
+    steps: ["Start with dry beans or rice (supervised) or water.", "Show her slowly, without talking.", "Let her pour and spill. Spills are part of the work.", "Hand her the sponge to wipe up."],
+    why: "Montessori pouring work builds careful hand control, focus and independence, and she learns that mistakes can be fixed.",
+    safety: "Dry beans and rice are choking hazards. Use water for younger toddlers.",
+    src: ["shelf", "choke"] },
+
+  // Everyday
+  { id: "narrate", occ: ["everyday"], min: 0, max: 36, dom: ["mind", "heart"], mins: 5,
+    title: "Narrate your day",
+    short: "Talk her through what you’re doing as you change, bathe and cook. Pause for her to answer.",
+    need: "Just you",
+    steps: ["Describe what you’re doing: “Now I’m putting on your sock. One foot, two feet.”", "Notice what she’s looking at and name it.", "Pause after you speak. Treat her sounds as answers.", "For toddlers, add one word to what she says: “Ball!” “Big ball!”"],
+    why: "Back‑and‑forth talk, not just hearing words, is what builds language and the brain’s wiring for learning.",
+    safety: "",
+    src: ["harvard"] },
+  { id: "chest-tummy", occ: ["everyday"], min: 0, max: 4, dom: ["body", "heart"], mins: 5,
+    title: "Tummy time on your chest",
+    short: "Recline and lay her tummy‑down on your chest, so lifting her head means seeing your face.",
+    need: "A comfy reclining spot",
+    steps: ["Lean back at about 45 degrees.", "Lay her chest‑to‑chest, holding her securely.", "Talk and smile so she wants to lift her head to see you.", "A few minutes, a few times a day."],
+    why: "The AAP recommends tummy time from day one. On your chest is the gentlest start, and your face is the best motivation.",
+    safety: "Stay awake and alert the whole time.",
+    src: ["tummy"] },
+  { id: "floor-mirror", occ: ["everyday"], min: 2, max: 12, dom: ["mind", "heart"], mins: 10,
+    title: "Floor mirror",
+    short: "Lay a safe, shatterproof mirror beside her on the floor so she can watch herself move.",
+    need: "An acrylic, shatterproof mirror",
+    steps: ["Place it securely beside or in front of her at floor level.", "Let her look and move. Don’t rush to point things out.", "Sometimes lie down with her and smile in the mirror together."],
+    why: "Montessori infant rooms put mirrors at floor level so babies can see their own movements, which builds body awareness and motivates movement.",
+    safety: "Use acrylic only, fixed so it can’t tip.",
+    src: ["shelf", "tummy"] },
+  { id: "treasure-everyday", occ: ["everyday"], min: 5, max: 10, dom: ["mind", "body"], mins: 15,
+    title: "Kitchen treasure basket",
+    short: "A basket of safe kitchen things to explore: a wooden spoon, a small whisk, a silicone cup, a lid.",
+    need: "A low basket and 5–8 safe kitchen objects",
+    steps: ["Pick different materials: wood, metal, silicone, fabric.", "Set it out in a calm spot when she’s rested.", "Sit nearby and let her lead.", "Swap one or two objects each week to keep it fresh."],
+    why: "Real objects give her honest information about weight, sound and texture, and choosing for herself builds concentration.",
+    safety: "Nothing small enough to fit through a toilet paper tube. Stay with her.",
+    src: ["treasure", "choke"] },
+  { id: "perm-box", occ: ["everyday"], min: 8, max: 14, dom: ["mind", "body"], mins: 10,
+    title: "Homemade object permanence box",
+    short: "A shoebox with a hole on top. Drop a ball in and watch it disappear, then reappear.",
+    need: "A shoebox with a lid, a tennis ball, scissors",
+    steps: ["Cut a hole in the lid just big enough for the ball.", "Cut a small opening at one end so the ball rolls out.", "Show her once: drop it in, “Where did it go?” then “There it is!”", "Let her try again and again."],
+    why: "The object permanence box is a Montessori material for this exact age. It shows her that things still exist when out of sight and builds hand‑eye coordination.",
+    safety: "Use a ball too big to swallow.",
+    src: ["shelf", "cdc"] },
+  { id: "posting", occ: ["everyday"], min: 10, max: 24, dom: ["body", "mind"], mins: 10,
+    title: "Posting box",
+    short: "Push lids, large wooden blocks or pom balls through a slot in a container.",
+    need: "A container with a slot cut in the lid, jar lids or chunky blocks",
+    steps: ["Show her how to push one lid through the slot.", "Hand her the next and wait.", "Open it up together and start again."],
+    why: "Putting things in and out of containers is a CDC 9‑month milestone. Posting builds wrist rotation and precision.",
+    safety: "Use objects too big to swallow.",
+    src: ["cdc", "shelf"] },
+  { id: "wipe-table", occ: ["everyday"], min: 18, max: 36, dom: ["body", "heart"], mins: 5,
+    title: "Wipe the table",
+    short: "Give her a small damp cloth after meals and let her wipe her own spot.",
+    need: "A small cloth or sponge",
+    steps: ["Show her once, slowly, with big wiping strokes.", "Hand her the cloth.", "Thank her for helping, even if it’s not perfect."],
+    why: "Real household jobs are Montessori practical life work. They build coordination, focus and the confidence of contributing.",
+    safety: "",
+    src: ["shelf", "cdc"] },
+  { id: "obstacle", occ: ["everyday", "winter"], min: 10, max: 30, dom: ["body", "heart"], mins: 15,
+    title: "Cushion obstacle course",
+    short: "Arrange couch cushions and pillows on the floor for her to crawl over, climb and tumble on.",
+    need: "Couch cushions and pillows, a clear soft floor",
+    steps: ["Lay cushions in a path, some flat and some stacked.", "Crawl through it first to show her.", "Let her find her own way over, around or through.", "Cheer the effort, not just the finish."],
+    why: "Climbing and crawling over uneven surfaces build strength, balance and body awareness, and conquering a small challenge builds confidence.",
+    safety: "Keep it low and away from furniture corners.",
+    src: ["aapplay", "cdc"] },
+  { id: "feelings-book", occ: ["everyday"], min: 12, max: 36, dom: ["heart", "mind"], mins: 10,
+    title: "Name the feeling",
+    short: "Look at a book of baby faces and name each feeling, then make the faces together.",
+    need: "A board book with real baby faces, or family photos",
+    steps: ["Point to a face: “She looks sad. Her mouth goes down.”", "Make the face yourself and let her copy.", "Connect it to her day: “You were happy at the park.”"],
+    why: "Children who learn words for feelings have an easier time handling big emotions later.",
+    safety: "",
+    src: ["cdc", "aapread"] },
+
+  // Weather days (shown when today's weather matches)
+  { id: "rain-window", occ: ["everyday"], min: 0, max: 24, dom: ["mind", "heart"], mins: 10, where: "in", needs: ["rainy"],
+    title: "Raindrop watching",
+    short: "Sit by a rainy window together and watch the drops race down the glass.",
+    need: "A window and a cozy spot",
+    steps: ["Hold her near the glass or sit her on your lap facing it.", "Trace a raindrop with your finger as it slides: “Down, down, down!”", "Listen together and name the sound: “Pitter‑patter.”", "For toddlers, pick two drops and guess which reaches the bottom first."],
+    why: "Following moving drops practices visual tracking, and naming sounds and movement builds early language. Calm shared attention like this is serve and return.",
+    safety: "",
+    src: ["harvard", "cdc"] },
+  { id: "colander-rain", occ: ["everyday"], min: 6, max: 36, dom: ["mind", "body"], mins: 15, where: "in", wx: ["rainy", "hot"],
+    title: "Bathtub rain shower",
+    short: "Pour water through a colander at bath time to make indoor rain she can catch.",
+    need: "A colander, or a yogurt cup with holes poked in it",
+    steps: ["During a normal bath, fill the colander and hold it above her hands.", "Say “Rain!” as it falls. Let her catch drops and splash.", "Hand it to her to fill and lift herself.", "Try a cup with fewer holes for slow rain."],
+    why: "Pouring and watching water fall teaches cause and effect and strengthens her grip. It brings the rain inside on a day you can’t go out.",
+    safety: "Never step away from a baby in the bath, even for a moment.",
+    src: ["water", "aapplay"] },
+  { id: "sock-snowballs", occ: ["everyday"], min: 12, max: 36, dom: ["body", "heart"], mins: 10, where: "in", wx: ["cold", "snowy", "rainy"],
+    title: "Sock snowball toss",
+    short: "Ball up pairs of white socks and toss them into a laundry basket.",
+    need: "Rolled‑up socks and a laundry basket",
+    steps: ["Roll socks into soft balls.", "Put the basket close at first. Show her how to throw.", "Move it farther as she gets the hang of it.", "Have a gentle “snowball fight.” Soft socks don’t hurt."],
+    why: "Throwing builds arm strength, coordination and aim, and moving her whole body is a good outlet on a day stuck inside.",
+    safety: "",
+    src: ["aapplay", "cdc"] },
+  { id: "snow-walk", occ: ["everyday"], min: 6, max: 36, dom: ["body", "mind"], mins: 15, where: "out", needs: ["snowy"],
+    title: "Snow walk",
+    short: "A short bundled‑up walk to see, touch and hear fresh snow.",
+    need: "Snowsuit or warm layers, hat, mittens, boots",
+    steps: ["Dress her in one more layer than you’re wearing.", "Let her touch snow with a mitten, then a bare finger for a second.", "Make footprints and show her yours next to hers.", "Listen for the crunch. Head in after 10–15 minutes, or sooner if she’s cold."],
+    why: "Snow is a new texture, sound and temperature all at once. Walking in it builds balance for toddlers.",
+    safety: "Check her hands, feet and cheeks often. Come in if she’s shivering or her skin looks pale or very red.",
+    src: ["cold"] },
+  { id: "pinwheel", occ: ["everyday"], min: 3, max: 24, dom: ["mind", "body"], mins: 10, where: "either", needs: ["windy"],
+    title: "Watch the wind",
+    short: "Hold a pinwheel or ribbon up to the breeze and watch it spin and dance.",
+    need: "A pinwheel, ribbon or light scarf",
+    steps: ["Hold it where she can see it move.", "Say “Wind! Whoosh!” each time it spins.", "Blow on it yourself to show her you can make wind too.", "Let toddlers hold it and run."],
+    why: "Seeing something move with no visible cause sparks curiosity, and blowing on it shows cause and effect.",
+    safety: "Pinwheels have small parts. Keep it in your hands for young babies.",
+    src: ["choke", "aapplay"] },
+  { id: "picnic", occ: ["everyday"], min: 0, max: 36, dom: ["body", "heart"], mins: 30, where: "out", wx: ["sunny", "cloudy"],
+    title: "Picnic blanket play",
+    short: "Spread a blanket in the park and bring her favorite toys and a snack outside.",
+    need: "A blanket, a few toys, a snack or feed, shade",
+    steps: ["Find a shady spot.", "Young babies: tummy time and back time on the blanket.", "Crawlers and walkers: let her explore just off the blanket and come back.", "Point out dogs, birds and people walking by."],
+    why: "Outdoors there is more to see and hear, and crawlers and walkers get new surfaces to master.",
+    safety: "Shade for babies under 6 months; sunscreen and a hat for older ones.",
+    src: ["sun", "aapplay"] }
+];
+
+/* Where each activity happens and which weather suits it.
+   where: in (default) | out | either. wx: weather it shines in. needs: only show in this weather. */
+const FIT = {
+  "pumpkin-explore": { where: "either" }, "pumpkin-wash": { where: "either" }, "tee-hammer": { where: "either" },
+  "decor-walk": { where: "out", wx: ["sunny", "cloudy", "cold"] },
+  "leaf-crunch": { where: "either", wx: ["windy"] }, "nature-sort": { where: "either" },
+  "leaf-pile": { where: "out", wx: ["sunny", "cloudy", "windy"] }, "breeze-scarf": { where: "out", wx: ["windy"] },
+  "dance-party": { wx: ["rainy", "cold", "snowy", "hot"] },
+  "snow-bin": { needs: ["snowy"] }, "ice-rescue": { wx: ["hot"] }, "warm-cold": { wx: ["cold"] },
+  "blanket-ride": { wx: ["rainy", "cold", "snowy"] }, "coat-flip": { wx: ["cold", "snowy"] }, "book-nest": { wx: ["rainy", "cold", "snowy"] },
+  "grass-feet": { where: "out", wx: ["sunny", "hot"] }, "plant-seeds": { where: "either" },
+  "bird-window": { wx: ["rainy", "snowy", "cold"] }, "puddle-stomp": { where: "out", needs: ["rainy"] },
+  "water-tray": { where: "either", wx: ["hot", "sunny"] }, "shade-tummy": { where: "out", wx: ["sunny", "cloudy", "hot"] },
+  "sand-play": { where: "out", wx: ["sunny", "cloudy"] }, "frozen-feeder": { wx: ["hot"] },
+  "bubbles": { where: "out", wx: ["sunny", "cloudy", "windy"] }, "hose-rainbow": { where: "out", needs: ["hot", "sunny"] },
+  "obstacle": { wx: ["rainy", "cold", "snowy", "hot"] }
+};
+ACTIVITIES.forEach(a => { a.where = a.where || "in"; Object.assign(a, FIT[a.id] || {}); });
+
+/* ---------- glyphs ---------- */
+const GLYPHS = {
+  halloween: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c-5 0-8 2.7-8 6.5S7 20 12 20s8-2.7 8-6.5S17 7 12 7Z"/><path d="M12 7c-2 0-3 3-3 6.5S10 20 12 20M12 7c2 0 3 3 3 6.5S14 20 12 20"/><path d="M12 7c0-2 1-3.3 2.5-3.8"/></svg>',
+  fall: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19C5 10 10 5 19 5c0 9-5 14-14 14Z"/><path d="M5 19 13 11"/></svg>',
+  thanksgiving: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V9"/><path d="M12 9c-2-1-3-3-3-5 2 0 3.5 1.5 3 5ZM12 9c2-1 3-3 3-5-2 0-3.5 1.5-3 5Z"/><path d="M12 14c-2.5-.6-4-2.4-4-4.6 2.4 0 4 1.6 4 4.6ZM12 14c2.5-.6 4-2.4 4-4.6-2.4 0-4 1.6-4 4.6Z"/></svg>',
+  holidays: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 6 11h3l-4 6h14l-4-6h3Z"/><path d="M12 17v4"/></svg>',
+  winter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/><path d="M10 4.5 12 6l2-1.5M10 19.5 12 18l2 1.5"/></svg>',
+  valentine: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.6 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z"/></svg>',
+  spring: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12C12 8 9.5 6 5 6c0 4 2.5 6 7 6ZM12 14c0-4 2.5-6 7-6 0 4-2.5 6-7 6Z"/></svg>',
+  summer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>',
+  everyday: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="9" cy="10.5" r=".6" fill="currentColor"/><circle cx="15" cy="10.5" r=".6" fill="currentColor"/><path d="M8.8 14.2c1.8 1.9 4.6 1.9 6.4 0"/></svg>',
+  cloudy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7Z"/></svg>',
+  rainy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 14h10a3.5 3.5 0 0 0 .4-6.97A5.5 5.5 0 0 0 6.5 8 3 3 0 0 0 7 14Z"/><path d="M8 17.5 7 20M12 17.5 11 20M16 17.5 15 20"/></svg>',
+  windy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 14h15a3 3 0 1 1-3 3"/><path d="M3 19h6"/></svg>',
+  cold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0Z"/><path d="M12 9v7"/></svg>',
+  heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.6 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>'
+};
+
+/* ---------- storage (per-viewer convenience) ---------- */
+const store = {
+  get(k, fallback) { try { const v = localStorage.getItem("ls:" + k); return v == null ? fallback : JSON.parse(v); } catch (e) { return fallback; } },
+  set(k, v) { try { localStorage.setItem("ls:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* ---------- weather ---------- */
+const WEATHER = {
+  sunny:  { label: "Sunny",  glyph: "summer", bad: false, tip: "A good day to get outside. Keep babies under 6 months in the shade; older babies can wear sunscreen and a hat." },
+  cloudy: { label: "Cloudy", glyph: "cloudy", bad: false, tip: "Comfortable for a walk or outdoor play. UV still gets through clouds." },
+  rainy:  { label: "Rainy",  glyph: "rainy",  bad: true,  tip: "Indoor ideas come first today. A short puddle splash in boots is fine when there’s no thunder or lightning." },
+  snowy:  { label: "Snowy",  glyph: "winter", bad: true,  tip: "Keep snowy outings short. Dress her in one more layer than you’re wearing and cover her head, hands and feet." },
+  cold:   { label: "Cold",   glyph: "cold",   bad: false, tip: "Short outings are fine. Dress her in one more layer than you’re wearing, and take bulky coats off in the car seat." },
+  hot:    { label: "Hot",    glyph: "summer", bad: true,  tip: "Water play and shade are best today. Go out early or late, and offer feeds more often." },
+  windy:  { label: "Windy",  glyph: "windy",  bad: false, tip: "A breezy day is great for watching things move. Shield her face from the wind on cold days." }
+};
+// The Claude artifact viewer blocks outside requests; opened in a normal browser, live weather works.
+const SANDBOXED = (() => { try { return window.top !== window.self; } catch (e) { return true; } })();
+const US_UNITS = /-(US|LR|MM)$/i.test(navigator.language || "");
+function fmtTemp(c) { return US_UNITS ? Math.round(c * 9 / 5 + 32) + "°F" : Math.round(c) + "°C"; }
+
+function classify(code, feels, wind) {
+  if ([71, 73, 75, 77, 85, 86].includes(code)) return "snowy";
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95) return "rainy";
+  if (feels >= 29) return "hot";
+  if (feels <= 4) return "cold";
+  if (wind >= 35) return "windy";
+  return code <= 1 ? "sunny" : "cloudy";
+}
+function describe(code) {
+  const names = { 0: "clear", 1: "mostly clear", 2: "partly cloudy", 3: "overcast", 45: "foggy", 48: "foggy",
+    51: "light drizzle", 53: "drizzle", 55: "heavy drizzle", 56: "freezing drizzle", 57: "freezing drizzle",
+    61: "light rain", 63: "rain", 65: "heavy rain", 66: "freezing rain", 67: "freezing rain",
+    71: "light snow", 73: "snow", 75: "heavy snow", 77: "snow grains", 80: "showers", 81: "showers", 82: "heavy showers",
+    85: "snow showers", 86: "snow showers", 95: "thunderstorms", 96: "thunderstorms with hail", 99: "thunderstorms with hail" };
+  return names[code] || "mixed weather";
+}
+
+async function loadWeather(force) {
+  const loc = state.loc;
+  if (!loc) return;
+  const cached = store.get("live", null);
+  if (!force && cached && cached.lat === loc.lat && cached.lon === loc.lon && Date.now() - cached.at < 30 * 60000) {
+    state.live = cached; state.liveStatus = "ok"; render(); return;
+  }
+  state.liveStatus = "loading"; render();
+  try {
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=" + loc.lat + "&longitude=" + loc.lon +
+      "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&daily=uv_index_max&timezone=auto&forecast_days=1";
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    const c = j.current;
+    state.live = {
+      lat: loc.lat, lon: loc.lon, place: loc.name, at: Date.now(),
+      temp: c.temperature_2m, feels: c.apparent_temperature, code: c.weather_code, wind: c.wind_speed_10m,
+      uv: j.daily && j.daily.uv_index_max ? j.daily.uv_index_max[0] : null,
+      cond: classify(c.weather_code, c.apparent_temperature, c.wind_speed_10m),
+      desc: describe(c.weather_code), thunder: c.weather_code >= 95
+    };
+    store.set("live", state.live);
+    state.liveStatus = "ok";
+  } catch (e) {
+    state.live = null; state.liveStatus = "error";
+  }
+  state.shuffle = 0;
+  render();
+}
+
+async function findPlace(q) {
+  const r = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name=" + encodeURIComponent(q));
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const j = await r.json();
+  const p = j.results && j.results[0];
+  if (!p) return null;
+  return { name: p.name + (p.admin1 && p.admin1 !== p.name ? ", " + p.admin1 : ""), lat: p.latitude, lon: p.longitude };
+}
+
+/* ---------- date + age logic ---------- */
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+function inRanges(date, ranges) {
+  const v = (date.getMonth() + 1) * 100 + date.getDate();
+  return ranges.some(([m1, d1, m2, d2]) => v >= m1 * 100 + d1 && v <= m2 * 100 + d2);
+}
+function currentOccasions(date) {
+  return Object.keys(OCCASIONS).filter(k => k !== "everyday" && inRanges(date, OCCASIONS[k].ranges));
+}
+function parseDate(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+}
+function isoDate(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function ageInMonths(dob, now) {
+  let m = (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
+  if (now.getDate() < dob.getDate()) m -= 1;
+  return Math.max(0, m);
+}
+function ageLabel(dob, now) {
+  const days = Math.round((now - dob) / 86400000);
+  if (days < 0) return "not born yet";
+  const months = ageInMonths(dob, now);
+  if (months < 3) { const w = Math.floor(days / 7); return w + (w === 1 ? " week" : " weeks"); }
+  if (months < 24) return months + " months";
+  const y = Math.floor(months / 12), r = months % 12;
+  return y + " years" + (r ? " " + r + (r === 1 ? " month" : " months") : "");
+}
+function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+/* ---------- state ---------- */
+const exampleDob = new Date(today); exampleDob.setMonth(exampleDob.getMonth() - 7);
+const state = {
+  name: store.get("name", ""),
+  dob: store.get("dob", ""),
+  occ: "now",
+  dom: "all",
+  shuffle: 0,
+  tried: new Set(store.get("tried", [])),
+  loc: store.get("loc", null),
+  wxPick: "auto",
+  live: null,
+  liveStatus: "idle"
+};
+function currentWx() { return state.wxPick === "auto" ? (state.live ? state.live.cond : null) : state.wxPick; }
+const nowOccs = currentOccasions(today);
+
+function babyDob() { return parseDate(state.dob) || exampleDob; }
+function babyName() { return state.name.trim(); }
+
+function activeOccs() { return state.occ === "now" ? (nowOccs.length ? nowOccs : ["everyday"]) : [state.occ]; }
+
+function matches() {
+  const age = ageInMonths(babyDob(), today);
+  const occs = activeOccs();
+  const W = currentWx();
+  const storm = !!(W && state.wxPick === "auto" && state.live && state.live.thunder);
+  const byAge = ACTIVITIES.filter(a => age >= a.min && age <= a.max);
+  const byDom = a => state.dom === "all" || a.dom.includes(state.dom);
+  const needsOk = a => !a.needs || !W || a.needs.includes(W);
+  const fits = a => !!W && ((a.wx || []).includes(W) || (a.needs || []).includes(W));
+  let list = byAge.filter(a => a.occ.some(o => occs.includes(o)));
+  // In season mode, today's weather also pulls in matching everyday ideas
+  if (state.occ === "now" && W) list = list.concat(byAge.filter(a => a.occ.includes("everyday") && fits(a) && !list.includes(a)));
+  list = list.filter(byDom).filter(needsOk);
+  let topped = false;
+  if (state.occ === "now" && list.length < 4) {
+    const extra = byAge.filter(a => a.occ.includes("everyday") && !a.needs && !list.includes(a)).filter(byDom);
+    if (extra.length) { list = list.concat(extra); topped = true; }
+  }
+  // Weather first (fits up, outdoor-in-bad-weather down), then seasonal specificity
+  const rank = a => { const i = occs.findIndex(o => a.occ.includes(o)); return i === -1 ? 99 : i; };
+  list.forEach(a => {
+    a._fits = fits(a) && !(storm && a.where === "out");
+    a._later = !!W && a.where === "out" && (storm || (WEATHER[W].bad && !a._fits));
+    a._score = (a._fits ? 3 : 0) - (a._later ? 5 : 0) + (W && WEATHER[W].bad && a.where === "in" ? 1 : 0);
+  });
+  list.sort((a, b) => b._score - a._score || rank(a) - rank(b));
+  return { list, topped, age };
+}
+
+/* ---------- render ---------- */
+const $ = id => document.getElementById(id);
+
+function domTags(a) {
+  return a.dom.map(d => `<span class="tag"><span class="dot ${d}"></span>${DOMAINS[d].label}</span>`).join("");
+}
+function cites(a) {
+  return `<div class="cites">${a.src.map(k => `<a href="${SOURCES[k][1]}" target="_blank" rel="noopener">${esc(SOURCES[k][0].split(":")[0])}</a>`).join("")}</div>`;
+}
+function triedBtn(a) {
+  const on = state.tried.has(a.id);
+  return `<button class="tried" type="button" data-tried="${a.id}" aria-pressed="${on}">${GLYPHS.heart}${on ? "We did this" : "Mark as done"}</button>`;
+}
+function primaryOcc(a) {
+  const occs = activeOccs();
+  return a.occ.find(o => occs.includes(o)) || a.occ[0];
+}
+function renderHeader(age) {
+  const n = babyName();
+  const lead = activeOccs()[0];
+  const occWord = state.occ === "now" ? OCCASIONS[lead].label : OCCASIONS[state.occ].label;
+  const who = n ? esc(n) : "your baby";
+  $("headline").innerHTML = `${occWord} play for ${who}, <em>${ageLabel(babyDob(), today)}</em>`;
+  $("example-note").hidden = !!parseDate(state.dob);
+  $("edit-btn").textContent = parseDate(state.dob) ? "Edit baby" : "Add your baby";
+  $("brand-glyph").innerHTML = GLYPHS[lead];
+  $("app").dataset.occ = lead;
+}
+
+function renderRails() {
+  const occKeys = ["now", ...Object.keys(OCCASIONS).filter(k => !nowOccs.includes(k))];
+  const occRail = $("occ-rail");
+  occRail.querySelectorAll(".chip").forEach(c => c.remove());
+  occKeys.forEach(k => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.dataset.occ = k;
+    b.setAttribute("aria-pressed", String(state.occ === k));
+    if (k === "now") {
+      const names = nowOccs.length ? nowOccs.map(o => OCCASIONS[o].label).join(" + ") : "Any day";
+      b.innerHTML = `${GLYPHS[nowOccs[0] || "everyday"]}<span>${names}</span><span class="now">Now</span>`;
+    } else {
+      b.innerHTML = `${GLYPHS[k]}<span>${OCCASIONS[k].label}</span>`;
+    }
+    occRail.appendChild(b);
+  });
+  const wxRail = $("wx-rail");
+  wxRail.querySelectorAll(".chip").forEach(c => c.remove());
+  ["auto", ...Object.keys(WEATHER)].forEach(k => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.dataset.wx = k;
+    b.setAttribute("aria-pressed", String(state.wxPick === k));
+    if (k === "auto") {
+      b.innerHTML = state.live
+        ? `${GLYPHS[WEATHER[state.live.cond].glyph]}<span>Today: ${WEATHER[state.live.cond].label}</span><span class="now">Live</span>`
+        : "<span>Any weather</span>";
+    } else {
+      b.innerHTML = `${GLYPHS[WEATHER[k].glyph]}<span>${WEATHER[k].label}</span>`;
+    }
+    wxRail.appendChild(b);
+  });
+  const domRail = $("dom-rail");
+  domRail.querySelectorAll(".chip").forEach(c => c.remove());
+  ["all", "body", "mind", "heart"].forEach(k => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.dataset.dom = k;
+    b.setAttribute("aria-pressed", String(state.dom === k));
+    b.title = k === "all" ? "All areas of development" : DOMAINS[k].long;
+    b.innerHTML = k === "all" ? "<span>All</span>" : `<span class="dot ${k}"></span><span>${DOMAINS[k].label}</span>`;
+    domRail.appendChild(b);
+  });
+}
+
+function renderPick(list) {
+  const el = $("pick");
+  if (!list.length) {
+    el.innerHTML = `<div class="pick-head"><span class="eyebrow">Today’s idea</span></div>
+      <h2>Nothing here for this age yet</h2>
+      <p class="lede">Try another season or set the focus back to All.</p>`;
+    return null;
+  }
+  const seed = hash(isoDate(today) + babyName() + state.occ + state.dom);
+  const pool = list.some(x => !x._later) ? list.filter(x => !x._later) : list;
+  // Start among the top few, then "Another idea" walks down the ranking
+  const a = pool[(seed % Math.min(3, pool.length) + state.shuffle) % pool.length];
+  el.innerHTML = `
+    <div class="pick-head">
+      <span class="eyebrow">Today’s idea · ${OCCASIONS[primaryOcc(a)].label}</span>
+      <button class="ghost" type="button" id="shuffle-btn">Another idea</button>
+    </div>
+    <div style="display:grid;gap:8px;position:relative;z-index:1">
+      <h2>${a.title}</h2>
+      <p class="lede">${a.short}</p>
+      <div class="meta">${domTags(a)}<span>About ${a.mins} min</span>${a._fits ? `<span class="badge-fit">Good for ${WEATHER[currentWx()].label.toLowerCase()} days</span>` : ""}</div>
+    </div>
+    <p class="need"><b>You’ll need:</b> ${a.need}</p>
+    <div class="pick-cols">
+      <div><div class="sub">How to do it</div><ol>${a.steps.map(s => `<li>${s}</li>`).join("")}</ol></div>
+      <div style="display:grid;gap:12px;align-content:start">
+        <div><div class="sub">Why it helps</div><p class="why">${a.why}</p></div>
+        ${a.safety ? `<p class="safety"><b>Safety:</b> ${a.safety}</p>` : ""}
+        ${cites(a)}
+      </div>
+    </div>
+    <div>${triedBtn(a)}</div>`;
+  return a;
+}
+
+function renderMilestones(age) {
+  const band = MILESTONES.find(b => age < b.to) || MILESTONES[MILESTONES.length - 1];
+  $("milestones").innerHTML = `
+    <div class="sub" style="margin:0">What she’s working on</div>
+    <h3>${band.label}</h3>
+    <ul>${band.items.map(([d, t]) => `<li><span class="dot ${d}"></span><span>${t}</span></li>`).join("")}</ul>
+    <p class="fine">Summarized from the <a href="${SOURCES.cdc[1]}" target="_blank" rel="noopener">CDC milestone checklists</a>. Many babies do these earlier or later.</p>`;
+}
+
+function renderGrid(list, pick, topped) {
+  const rest = list.filter(a => a !== pick);
+  $("list-title").textContent = rest.length ? "More ideas for this age" : "That’s every idea for now";
+  const n = list.length;
+  $("list-count").textContent = n + (n === 1 ? " activity" : " activities") + " match" + (topped ? ", including a few everyday favorites" : "");
+  if (!rest.length) {
+    $("grid").innerHTML = `<div class="empty">Try another season above, or check back as she grows. New ideas open up every few months.</div>`;
+    return;
+  }
+  $("grid").innerHTML = rest.map(a => {
+    const o = primaryOcc(a);
+    return `<article class="card${a._later ? " later" : ""}" data-occ="${o}">
+      <div class="occ">${GLYPHS[o]}${OCCASIONS[o].label}</div>
+      <h3>${a.title}</h3>
+      <p class="short">${a.short}</p>
+      <div class="meta">${domTags(a)}<span>${a.mins} min</span>${a._fits ? `<span class="badge-fit">Good for today’s weather</span>` : ""}${a._later ? `<span class="badge-later">Save for a nicer day</span>` : ""}</div>
+      <details>
+        <summary>How to do it</summary>
+        <div class="inner">
+          <p class="need"><b>You’ll need:</b> ${a.need}</p>
+          <ol>${a.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+          <p class="why">${a.why}</p>
+          ${a.safety ? `<p class="safety"><b>Safety:</b> ${a.safety}</p>` : ""}
+          ${cites(a)}
+        </div>
+      </details>
+      <div class="card-foot">${triedBtn(a)}</div>
+    </article>`;
+  }).join("");
+}
+
+function renderSources() {
+  $("source-list").innerHTML = Object.values(SOURCES)
+    .map(([n, u]) => `<li><a href="${u}" target="_blank" rel="noopener">${esc(n)}</a></li>`).join("");
+}
+
+function wxTip(W) {
+  let t = WEATHER[W].tip;
+  const L = state.wxPick === "auto" ? state.live : null;
+  if (L && L.thunder) return "Thunderstorms today. Keep play indoors until it passes.";
+  if (L && Math.abs(L.feels - L.temp) >= 3) t = "Feels like " + fmtTemp(L.feels) + ". " + t;
+  if (L && L.uv >= 6) t += " UV index " + Math.round(L.uv) + " today, so shade and sun protection matter.";
+  return t;
+}
+
+function renderWeather() {
+  const W = currentWx();
+  $("loc-btn").textContent = state.loc ? "Change location" : "Add location";
+  $("wx-icon").innerHTML = GLYPHS[W ? WEATHER[W].glyph : "cloudy"];
+  let line, tip;
+  if (state.wxPick !== "auto") {
+    line = "Planning for a " + WEATHER[W].label.toLowerCase() + " day";
+    tip = wxTip(W);
+  } else if (state.liveStatus === "loading") {
+    line = "Checking the weather in " + state.loc.name + "…"; tip = "";
+  } else if (state.live) {
+    line = state.live.place + " · " + fmtTemp(state.live.temp) + ", " + state.live.desc;
+    tip = wxTip(W);
+  } else if (state.liveStatus === "error") {
+    line = "Couldn’t get live weather";
+    tip = SANDBOXED
+      ? "Live weather works when this app is opened in a regular browser. For now, pick today’s weather below."
+      : "Check your connection, or pick today’s weather below.";
+  } else {
+    line = "Add your town to match ideas to today’s weather";
+    tip = "Or pick the weather below.";
+  }
+  $("wx-line").textContent = line;
+  $("wx-tip").textContent = tip;
+  $("wx-tip").hidden = !tip;
+}
+
+function render() {
+  const { list, topped, age } = matches();
+  renderHeader(age);
+  renderWeather();
+  renderRails();
+  const pick = renderPick(list);
+  renderMilestones(age);
+  renderGrid(list, pick, topped);
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  const occ = e.target.closest("[data-occ].chip");
+  if (occ) { state.occ = occ.dataset.occ; state.shuffle = 0; render(); return; }
+  const wx = e.target.closest("[data-wx]");
+  if (wx) { state.wxPick = wx.dataset.wx; state.shuffle = 0; render(); return; }
+  const dom = e.target.closest("[data-dom]");
+  if (dom) { state.dom = dom.dataset.dom; state.shuffle = 0; render(); return; }
+  if (e.target.closest("#shuffle-btn")) { state.shuffle++; render(); $("shuffle-btn").focus(); return; }
+  const t = e.target.closest("[data-tried]");
+  if (t) {
+    const id = t.dataset.tried;
+    state.tried.has(id) ? state.tried.delete(id) : state.tried.add(id);
+    store.set("tried", [...state.tried]);
+    document.querySelectorAll(`[data-tried="${id}"]`).forEach(b => {
+      const on = state.tried.has(id);
+      b.setAttribute("aria-pressed", String(on));
+      b.innerHTML = GLYPHS.heart + (on ? "We did this" : "Mark as done");
+    });
+  }
+});
+
+function openSetup() {
+  $("baby-name").value = state.name;
+  $("baby-dob").value = state.dob || "";
+  $("baby-dob").max = isoDate(today);
+  $("setup").hidden = false;
+  $("example-note").hidden = true;
+  $("baby-name").focus();
+}
+$("edit-btn").addEventListener("click", openSetup);
+$("example-btn").addEventListener("click", openSetup);
+$("cancel-btn").addEventListener("click", () => { $("setup").hidden = true; render(); });
+$("setup").addEventListener("submit", e => {
+  e.preventDefault();
+  const dob = parseDate($("baby-dob").value);
+  if (!dob || dob > today) { $("baby-dob").setCustomValidity("Pick a birthday on or before today."); $("baby-dob").reportValidity(); return; }
+  $("baby-dob").setCustomValidity("");
+  state.name = $("baby-name").value.trim();
+  state.dob = $("baby-dob").value;
+  store.set("name", state.name);
+  store.set("dob", state.dob);
+  state.shuffle = 0;
+  $("setup").hidden = true;
+  render();
+});
+$("baby-dob").addEventListener("input", () => $("baby-dob").setCustomValidity(""));
+
+function showLocErr(msg) { $("loc-err").textContent = msg; $("loc-err").hidden = !msg; }
+function setLoc(p) {
+  state.loc = p;
+  store.set("loc", p);
+  state.wxPick = "auto";
+  $("loc-form").hidden = true;
+  loadWeather(true);
+}
+$("loc-btn").addEventListener("click", () => {
+  $("loc-city").value = state.loc && state.loc.name !== "Your location" ? state.loc.name : "";
+  showLocErr("");
+  $("loc-form").hidden = false;
+  $("loc-city").focus();
+});
+$("loc-cancel").addEventListener("click", () => { $("loc-form").hidden = true; });
+$("loc-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const q = $("loc-city").value.trim();
+  if (!q) { showLocErr("Type a town or city."); return; }
+  showLocErr("");
+  $("loc-submit").textContent = "Finding…";
+  try {
+    const p = await findPlace(q);
+    if (p) setLoc(p); else showLocErr("We couldn’t find that place. Try a nearby city.");
+  } catch (err) {
+    showLocErr(SANDBOXED
+      ? "Place search doesn’t work inside this view. Open the app in a regular browser, or pick today’s weather below."
+      : "Couldn’t reach the weather service. Check your connection and try again.");
+  }
+  $("loc-submit").textContent = "Find weather";
+});
+$("geo-btn").addEventListener("click", () => {
+  showLocErr("");
+  if (!navigator.geolocation) { showLocErr("This browser can’t share your location. Type your town instead."); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => setLoc({ name: "Your location", lat: +pos.coords.latitude.toFixed(3), lon: +pos.coords.longitude.toFixed(3) }),
+    () => showLocErr("Location access wasn’t allowed. Type your town instead."),
+    { timeout: 10000, maximumAge: 3600000 }
+  );
+});
+
+renderSources();
+render();
+loadWeather(false);
+</script>
+</body>
+</html>
