@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: one column app. Baby + season header, filter rail, "today's pick" beside a milestone note, then a grid of activity cards. The season sets the accent. */
+/* Layout: one column app, built for a parent on a phone. Baby + weather header, then "today's pick" beside a milestone note up top, then filters and a grid of more activity cards. The season sets the accent. */
 :root {
   --bg: #f2f0ec;
   --surface: #fefdfb;
@@ -89,7 +89,7 @@ button, input { font: inherit; color: inherit }
 .hello { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px }
 .hello h1 { font-size: clamp(1.8rem, 4.6vw, 2.9rem); font-weight: 700; max-width: 22ch }
 .hello h1 em { font-style: normal; color: var(--accent) }
-.ghost { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--muted) }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; min-height: 42px; cursor: pointer; font-weight: 600; font-size: .95rem; color: var(--muted) }
 .ghost:hover { color: var(--ink); border-color: var(--muted) }
 
 .example {
@@ -97,14 +97,26 @@ button, input { font: inherit; color: inherit }
   background: var(--sunk); border-radius: var(--r); padding: 10px 14px; font-size: .93rem; color: var(--muted);
 }
 .example b { color: var(--ink) }
+.tried-count { display: flex; align-items: center; gap: 6px; color: var(--heart); font-weight: 600; font-size: .95rem }
+.tried-count svg { width: 16px; height: 16px }
+.tried-count svg path { fill: currentColor }
 
 form.setup {
   display: flex; flex-wrap: wrap; align-items: end; gap: 12px 16px;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px;
 }
 form.setup label { display: grid; gap: 4px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
-form.setup input { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 9px 12px; font-size: 1rem; text-transform: none; letter-spacing: 0; min-width: 0; width: 13rem; max-width: 100% }
-.solid { background: var(--accent); color: var(--surface); border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 700; cursor: pointer }
+form.setup input { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 11px 12px; font-size: 1rem; text-transform: none; letter-spacing: 0; min-width: 0; width: 13rem; max-width: 100% }
+.setup h2 { width: 100%; font-size: 1.2rem }
+.pron { border: 0; margin: 0; padding: 0; display: grid; gap: 4px; min-width: 0 }
+.pron legend { padding: 0; margin-bottom: 4px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--bg) }
+.seg label { display: block; text-transform: none; letter-spacing: 0; font-size: 1rem; color: var(--ink) }
+.seg input { position: absolute; opacity: 0; width: 1px; height: 1px }
+.seg span { display: block; padding: 7px 16px; border-radius: 999px; cursor: pointer; font-weight: 600 }
+.seg input:checked + span { background: var(--ink); color: var(--bg) }
+.seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px }
+.solid { background: var(--accent); color: var(--surface); border: 0; border-radius: 999px; padding: 11px 20px; min-height: 44px; font-weight: 700; font-size: 1rem; cursor: pointer }
 .solid:hover { filter: brightness(1.08) }
 
 /* Filters */
@@ -114,7 +126,7 @@ form.setup input { border: 1px solid var(--line); background: var(--bg); border-
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
   border: 1px solid var(--line); background: var(--surface); border-radius: 999px;
-  padding: 6px 13px; cursor: pointer; font-weight: 600; font-size: .9rem;
+  padding: 9px 15px; min-height: 42px; cursor: pointer; font-weight: 600; font-size: .95rem; white-space: nowrap;
 }
 .chip svg { width: 16px; height: 16px; flex: none }
 .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink) }
@@ -122,6 +134,13 @@ form.setup input { border: 1px solid var(--line); background: var(--bg); border-
 .chip[aria-pressed="true"] .now { color: inherit; opacity: .75 }
 .dot { width: 9px; height: 9px; border-radius: 50%; flex: none }
 .dot.body { background: var(--body) } .dot.mind { background: var(--mind) } .dot.heart { background: var(--heart) }
+/* On phones each filter is one swipeable row instead of a wall of chips */
+@media (max-width: 600px) {
+  .rail { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding-inline: 16px }
+  .rail::-webkit-scrollbar { display: none }
+  .rail-label { min-width: auto; flex: none }
+  .chip { flex: none }
+}
 
 /* Pick + milestones */
 .feature { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start }
@@ -141,7 +160,7 @@ form.setup input { border: 1px solid var(--line); background: var(--bg); border-
 .pick .lede { font-size: 1.05rem; color: var(--muted); max-width: 60ch }
 .pick-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px }
 @media (max-width: 560px) { .pick-cols { grid-template-columns: minmax(0, 1fr) } }
-.pick ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px }
+.pick ol { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; font-size: 1.02rem }
 .sub { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px }
 
 .milestones { background: var(--sunk); border-radius: var(--r); padding: 20px; display: grid; gap: 12px }
@@ -156,19 +175,23 @@ form.setup input { border: 1px solid var(--line); background: var(--bg); border-
 .meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: .85rem; color: var(--muted) }
 .tag { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: var(--ink) }
 .why { border-left: 3px solid var(--accent); padding-left: 12px; font-size: .95rem }
-.safety { font-size: .88rem; color: var(--muted) }
+.safety { font-size: .92rem; background: color-mix(in srgb, var(--heart) 9%, transparent); border-radius: 10px; padding: 9px 12px }
 .safety b { color: var(--ink) }
 .cites { display: flex; flex-wrap: wrap; gap: 6px; font-size: .8rem }
 .cites a { color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px }
 .cites a:hover { color: var(--ink); border-color: var(--muted) }
 .need { font-size: .92rem }
 .need b { font-weight: 600 }
-.tried { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-weight: 600; font-size: .85rem; color: var(--muted) }
+.tried { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 9px 14px; min-height: 42px; cursor: pointer; font-weight: 600; font-size: .92rem; color: var(--muted) }
 .tried svg { width: 15px; height: 15px }
 .tried[aria-pressed="true"] { color: var(--heart); border-color: var(--heart) }
 .tried[aria-pressed="true"] svg path { fill: currentColor }
+.pick-foot { display: flex; flex-wrap: wrap; gap: 10px; position: relative; z-index: 1 }
+.shuffle { display: inline-flex; align-items: center; gap: 6px }
+.shuffle svg { width: 16px; height: 16px }
 
-/* Grid */
+/* More ideas */
+.browse { display: grid; gap: 16px }
 .list-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px }
 .list-head h2 { font-size: 1.4rem }
 .list-head p { color: var(--muted); font-size: .92rem }
@@ -178,12 +201,12 @@ form.setup input { border: 1px solid var(--line); background: var(--bg); border-
 .card .occ { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 6px }
 .card .occ svg { width: 14px; height: 14px }
 .card p.short { color: var(--muted); font-size: .95rem }
-details summary { cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--ink); list-style: none; display: inline-flex; align-items: center; gap: 6px }
+details summary { cursor: pointer; font-weight: 600; font-size: .95rem; padding-block: 6px; color: var(--ink); list-style: none; display: inline-flex; align-items: center; gap: 6px }
 details summary::-webkit-details-marker { display: none }
-details summary::before { content: "+"; display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--sunk); font-size: .85rem }
+details summary::before { content: "+"; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--sunk); font-size: .85rem }
 details[open] summary::before { content: "\2212" }
 details .inner { display: grid; gap: 10px; padding-top: 10px }
-details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: .93rem }
+details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size: .97rem }
 .card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px }
 .empty { background: var(--sunk); border-radius: var(--r); padding: 22px; color: var(--muted) }
 
@@ -221,17 +244,26 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size:
       <h1 id="headline">Play ideas for your baby</h1>
       <button class="ghost" id="edit-btn" type="button">Edit baby</button>
     </div>
+    <p class="tried-count" id="tried-count" hidden></p>
     <div class="example" id="example-note" hidden>
-      <span><b>Showing a 7‑month‑old as an example.</b> Add her name and birthday to tailor the ideas.</span>
-      <button class="ghost" type="button" id="example-btn">Add birthday</button>
+      <span><b>Showing ideas for a 7‑month‑old.</b> Add your baby’s birthday and every idea will fit their age.</span>
+      <button class="solid" type="button" id="example-btn">Add my baby</button>
     </div>
     <form class="setup" id="setup" hidden>
-      <label for="baby-name">Name
+      <h2>Tell us about your little one</h2>
+      <label for="baby-name">First name
         <input id="baby-name" type="text" autocomplete="off" placeholder="e.g. Rosie">
       </label>
       <label for="baby-dob">Birthday
         <input id="baby-dob" type="date" required>
       </label>
+      <fieldset class="pron">
+        <legend>Ideas should say</legend>
+        <div class="seg">
+          <label><input type="radio" name="pron" value="she"><span>she / her</span></label>
+          <label><input type="radio" name="pron" value="he"><span>he / him</span></label>
+        </div>
+      </fieldset>
       <button class="solid" type="submit">Save</button>
       <button class="ghost" type="button" id="cancel-btn">Cancel</button>
     </form>
@@ -251,30 +283,30 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size:
     </form>
   </header>
 
-  <section class="filters" aria-label="Filters">
-    <div class="rail" id="occ-rail"><span class="rail-label">Season</span></div>
-    <div class="rail" id="wx-rail"><span class="rail-label">Weather</span></div>
-    <div class="rail" id="dom-rail"><span class="rail-label">Focus</span></div>
-  </section>
-
   <section class="feature">
     <article class="pick" id="pick" aria-live="polite"></article>
     <aside class="milestones" id="milestones"></aside>
   </section>
 
-  <section style="display:grid;gap:14px">
+  <section class="browse">
     <div class="list-head">
       <h2 id="list-title">More ideas</h2>
       <p id="list-count"></p>
+    </div>
+    <div class="filters" role="group" aria-label="Filters">
+      <div class="rail" id="time-rail"><span class="rail-label">Time I have</span></div>
+      <div class="rail" id="dom-rail"><span class="rail-label">Helps with</span></div>
+      <div class="rail" id="occ-rail"><span class="rail-label">Season</span></div>
+      <div class="rail" id="wx-rail"><span class="rail-label">Weather</span></div>
     </div>
     <div class="grid" id="grid"></div>
   </section>
 
   <footer class="sources">
     <h2>Where these ideas come from</h2>
-    <p>Each activity is matched to the skills most babies are building at that age, using the CDC’s milestone checklists (the skills 75% or more of children show by each age) and the American Academy of Pediatrics. Many are adapted from Montessori infant and toddler practice: real objects, a calm uncluttered space, following the child’s lead, and letting her do it herself. The “serve and return” back-and-forth from Harvard’s Center on the Developing Child runs through all of them.</p>
+    <p>Each activity is matched to the skills most babies are building at that age, using the CDC’s milestone checklists (the skills 75% or more of children show by each age) and the American Academy of Pediatrics. Many are adapted from Montessori infant and toddler practice: real objects, a calm uncluttered space, following the child’s lead, and letting them do it themselves. The “serve and return” back-and-forth from Harvard’s Center on the Developing Child runs through all of them.</p>
     <ul id="source-list"></ul>
-    <p>Every baby develops on her own timeline, and age ranges here are guides, not rules. Always supervise, check that objects are too big to swallow, and ask your pediatrician about anything that worries you.</p>
+    <p>Every baby develops on their own timeline, and age ranges here are guides, not rules. Always supervise, check that objects are too big to swallow, and ask your pediatrician about anything that worries you.</p>
     <p>Live weather from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open‑Meteo</a>. Your town is saved only in this browser.</p>
   </footer>
 </div>
@@ -308,9 +340,9 @@ const OCCASIONS = {
 };
 
 const DOMAINS = {
-  body:  { label: "Body",  long: "Body: movement, strength, hands" },
-  mind:  { label: "Mind",  long: "Mind: senses, thinking, language" },
-  heart: { label: "Heart", long: "Heart: connection, feelings, confidence" }
+  body:  { label: "Moving",             long: "Movement, strength and hands" },
+  mind:  { label: "Thinking & talking", long: "Senses, thinking and language" },
+  heart: { label: "Feelings & bonding", long: "Connection, feelings and confidence" }
 };
 
 const MILESTONES = [
@@ -1399,7 +1431,7 @@ const ACTIVITIES = [
     title: "Take care of the animals",
     short: "Feed, hug, bandage and tuck in her stuffed animals together.",
     need: "Stuffed animals, a small blanket, a spoon",
-    steps: ["“Teddy is hungry!” Pretend to feed him.", "Let her rock him and pat his back.", "“Teddy bumped his knee.” Give him a pretend bandage.", "Tuck everyone in for a nap."],
+    steps: ["“Teddy is hungry!” Pretend to feed him.", "Let her rock Teddy and pat his back.", "“Teddy bumped his knee.” Give him a pretend bandage.", "Tuck everyone in for a nap."],
     why: "Caring for toys lets her practice empathy and the gentle care she gets from you.",
     safety: "",
     src: ["cdc", "aapplay"] },
@@ -1707,7 +1739,7 @@ const ACTIVITIES = [
     src: ["cdc", "choke"] },
   { id: "ev-copy-coos", occ: ["everyday"], min: 2, max: 9, dom: ["heart", "mind"], mins: 5,
     title: "Copy her coos",
-    short: "When she coos or babbles, copy her sounds back to her and wait for her turn.",
+    short: "When she coos or babbles, copy her sounds back to her and wait for her to take a turn.",
     need: "Just you",
     steps: ["Wait for her to make a sound.", "Copy it back with a smile.", "Pause and wait for her to “answer.”", "Keep the conversation going."],
     why: "Taking turns with sounds is serve and return, the back‑and‑forth that builds language and the brain itself.",
@@ -1846,6 +1878,7 @@ const GLYPHS = {
   rainy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 14h10a3.5 3.5 0 0 0 .4-6.97A5.5 5.5 0 0 0 6.5 8 3 3 0 0 0 7 14Z"/><path d="M8 17.5 7 20M12 17.5 11 20M16 17.5 15 20"/></svg>',
   windy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 14h15a3 3 0 1 1-3 3"/><path d="M3 19h6"/></svg>',
   cold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0Z"/><path d="M12 9v7"/></svg>',
+  shuffle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h3c4 0 6 10 10 10h3"/><path d="M4 17h3c1.6 0 2.8-1.6 3.9-3.5M13.1 9.5C14.2 8.6 15.5 7 17 7h3"/><path d="m17 4 3 3-3 3M17 14l3 3-3 3"/></svg>',
   heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.6 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>'
 };
 
@@ -2010,6 +2043,8 @@ const state = {
   dob: store.get("dob", ""),
   occ: "now",
   dom: "all",
+  time: "any",
+  pron: store.get("pron", "she"),
   shuffle: 0,
   tried: new Set(store.get("tried", [])),
   loc: store.get("loc", null),
@@ -2031,7 +2066,7 @@ function matches() {
   const W = currentWx();
   const storm = !!(W && state.wxPick === "auto" && state.live && state.live.thunder);
   const byAge = ACTIVITIES.filter(a => age >= a.min && age <= a.max && climateOk(a));
-  const byDom = a => state.dom === "all" || a.dom.includes(state.dom);
+  const byDom = a => (state.dom === "all" || a.dom.includes(state.dom)) && (state.time === "any" || a.mins <= +state.time);
   const needsOk = a => !a.needs || !W || a.needs.includes(W);
   const fits = a => !!W && ((a.wx || []).includes(W) || (a.needs || []).includes(W));
   let list = byAge.filter(a => a.occ.some(o => occs.includes(o)));
@@ -2065,12 +2100,36 @@ function cites(a) {
 }
 function triedBtn(a) {
   const on = state.tried.has(a.id);
-  return `<button class="tried" type="button" data-tried="${a.id}" aria-pressed="${on}">${GLYPHS.heart}${on ? "We did this" : "Mark as done"}</button>`;
+  return `<button class="tried" type="button" data-tried="${a.id}" aria-pressed="${on}">${GLYPHS.heart}${on ? "Tried it!" : "We tried it"}</button>`;
 }
-// A few activities use "Rosie" as an example name; swap in the baby's own once it's set
+// Activity text is written with "she/her" and uses "Rosie" as an example name; swap in the baby's own.
+// "her" becomes "his" before a body part or belonging ("her hands") and "him" otherwise ("let her try").
+// After giving verbs only body parts stay "his" ("let her legs float" but "gives her words").
+const BODY = new Set(("hands head back face eyes eye mouth feet arms arm tummy toes nose fingers finger fist palm thighs ear legs " +
+  "chest neck skin elbows body heart breath core side knee").split(" "));
+const BELONGS = new Set(("hand place sense decorating own name reaction height standing sounds senses pace lead cues blanket bare balance winter whole view vision " +
+  "toy toys stuffed song smile sleep sign shadow level high home grip gaze drawing diaper day crib coos coat bath basket favorite play " +
+  "words answer reply moves first new little bed car shoes boots hat").split(" "));
+const GIVING = new Set(["give", "gives", "giving", "help", "helps", "hand", "show", "shows", "tell", "tells", "teach", "teaches", "offer", "offers", "let", "lets"]);
+const HE = { she: "he", "she’s": "he’s", "she's": "he's", herself: "himself", hers: "his" };
+function himHis(text) {
+  return text.replace(/\b(she’s|she's|she|herself|hers|her)\b/gi, (m, _, at) => {
+    const low = m.toLowerCase();
+    let out = HE[low];
+    if (!out) {
+      const prev = (/(\w+)\W*$/.exec(text.slice(0, at)) || [])[1];
+      const next = (/^ ([\w‑’-]+)/.exec(text.slice(at + m.length)) || [])[1];
+      const w = next && next.toLowerCase();
+      out = BODY.has(w) || (BELONGS.has(w) && !(prev && GIVING.has(prev.toLowerCase()))) ? "his" : "him";
+    }
+    return m[0] === m[0].toUpperCase() ? out[0].toUpperCase() + out.slice(1) : out;
+  });
+}
 function withName(html) {
   const n = babyName();
-  return n ? html.replace(/Rosie/g, esc(n)) : html;
+  if (n) html = html.replace(/Rosie/g, esc(n));
+  // Only touch text between tags so attributes and links stay intact
+  return state.pron === "he" ? html.split(/(<[^>]*>)/).map((p, i) => i % 2 ? p : himHis(p)).join("") : html;
 }
 function primaryOcc(a) {
   const occs = activeOccs();
@@ -2082,8 +2141,12 @@ function renderHeader(age) {
   const occWord = state.occ === "now" ? OCCASIONS[lead].label : OCCASIONS[state.occ].label;
   const who = n ? esc(n) : "your baby";
   $("headline").innerHTML = `${occWord} play for ${who}, <em>${ageLabel(babyDob(), today)}</em>`;
-  $("example-note").hidden = !!parseDate(state.dob);
-  $("edit-btn").textContent = parseDate(state.dob) ? "Edit baby" : "Add your baby";
+  const known = !!parseDate(state.dob);
+  $("example-note").hidden = known || !$("setup").hidden;
+  $("edit-btn").hidden = !known;
+  const done = state.tried.size;
+  $("tried-count").hidden = !done;
+  $("tried-count").innerHTML = done ? GLYPHS.heart + `You’ve tried ${done} ${done === 1 ? "idea" : "ideas"} together` : "";
   $("brand-glyph").innerHTML = GLYPHS[lead];
   $("app").dataset.occ = lead;
 }
@@ -2119,6 +2182,15 @@ function renderRails() {
     }
     wxRail.appendChild(b);
   });
+  const timeRail = $("time-rail");
+  timeRail.querySelectorAll(".chip").forEach(c => c.remove());
+  [["any", "Any amount"], ["5", "5 min"], ["10", "10 min"]].forEach(([k, label]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.dataset.time = k;
+    b.setAttribute("aria-pressed", String(state.time === k));
+    b.innerHTML = `<span>${label}</span>`;
+    timeRail.appendChild(b);
+  });
   const domRail = $("dom-rail");
   domRail.querySelectorAll(".chip").forEach(c => c.remove());
   ["all", "body", "mind", "heart"].forEach(k => {
@@ -2126,7 +2198,7 @@ function renderRails() {
     b.type = "button"; b.className = "chip"; b.dataset.dom = k;
     b.setAttribute("aria-pressed", String(state.dom === k));
     b.title = k === "all" ? "All areas of development" : DOMAINS[k].long;
-    b.innerHTML = k === "all" ? "<span>All</span>" : `<span class="dot ${k}"></span><span>${DOMAINS[k].label}</span>`;
+    b.innerHTML = k === "all" ? "<span>Everything</span>" : `<span class="dot ${k}"></span><span>${DOMAINS[k].label}</span>`;
     domRail.appendChild(b);
   });
 }
@@ -2136,7 +2208,7 @@ function renderPick(list) {
   if (!list.length) {
     el.innerHTML = `<div class="pick-head"><span class="eyebrow">Today’s idea</span></div>
       <h2>Nothing here for this age yet</h2>
-      <p class="lede">Try another season or set the focus back to All.</p>`;
+      <p class="lede">Try “Any amount” of time, “Everything”, or another season below.</p>`;
     return null;
   }
   const seed = hash(isoDate(today) + babyName() + state.occ + state.dom);
@@ -2146,7 +2218,6 @@ function renderPick(list) {
   el.innerHTML = withName(`
     <div class="pick-head">
       <span class="eyebrow">Today’s idea · ${OCCASIONS[primaryOcc(a)].label}</span>
-      <button class="ghost" type="button" id="shuffle-btn">Another idea</button>
     </div>
     <div style="display:grid;gap:8px;position:relative;z-index:1">
       <h2>${a.title}</h2>
@@ -2162,17 +2233,18 @@ function renderPick(list) {
         ${cites(a)}
       </div>
     </div>
-    <div>${triedBtn(a)}</div>`);
+    <div class="pick-foot">${triedBtn(a)}<button class="ghost shuffle" type="button" id="shuffle-btn">${GLYPHS.shuffle}Show me another</button></div>`);
   return a;
 }
 
 function renderMilestones(age) {
   const band = MILESTONES.find(b => age < b.to) || MILESTONES[MILESTONES.length - 1];
-  $("milestones").innerHTML = `
-    <div class="sub" style="margin:0">What she’s working on</div>
+  const n = babyName();
+  $("milestones").innerHTML = withName(`
+    <div class="sub" style="margin:0">What ${n ? esc(n) + "’s" : "she’s"} working on</div>
     <h3>${band.label}</h3>
     <ul>${band.items.map(([d, t]) => `<li><span class="dot ${d}"></span><span>${t}</span></li>`).join("")}</ul>
-    <p class="fine">Summarized from the <a href="${SOURCES.cdc[1]}" target="_blank" rel="noopener">CDC milestone checklists</a>. Many babies do these earlier or later.</p>`;
+    <p class="fine">Summarized from the <a href="${SOURCES.cdc[1]}" target="_blank" rel="noopener">CDC milestone checklists</a>. Many babies do these earlier or later.</p>`);
 }
 
 function renderGrid(list, pick, topped) {
@@ -2181,7 +2253,7 @@ function renderGrid(list, pick, topped) {
   const n = list.length;
   $("list-count").textContent = n + (n === 1 ? " activity" : " activities") + " match" + (topped ? ", including a few everyday favorites" : "");
   if (!rest.length) {
-    $("grid").innerHTML = `<div class="empty">Try another season above, or check back as she grows. New ideas open up every few months.</div>`;
+    $("grid").innerHTML = withName(`<div class="empty">Try another season above, or check back as she grows. New ideas open up every few months.</div>`);
     return;
   }
   $("grid").innerHTML = withName(rest.map(a => {
@@ -2236,14 +2308,14 @@ function renderWeather() {
   } else if (state.liveStatus === "error") {
     line = "Couldn’t get live weather";
     tip = SANDBOXED
-      ? "Live weather works when this app is opened in a regular browser. For now, pick today’s weather below."
-      : "Check your connection, or pick today’s weather below.";
+      ? "Live weather works when this app is opened in a regular browser. For now, pick today’s weather under More ideas."
+      : "Check your connection, or pick today’s weather under More ideas.";
   } else {
     line = "Add your town to match ideas to today’s weather";
-    tip = "Or pick the weather below.";
+    tip = "Or pick the weather under More ideas.";
   }
   $("wx-line").textContent = line;
-  $("wx-tip").textContent = tip;
+  $("wx-tip").textContent = withName(tip);
   $("wx-tip").hidden = !tip;
   const note = climateNote();
   $("wx-climate").textContent = note;
@@ -2280,6 +2352,8 @@ document.addEventListener("click", e => {
   if (wx) { state.wxPick = wx.dataset.wx; state.shuffle = 0; render(); return; }
   const dom = e.target.closest("[data-dom]");
   if (dom) { state.dom = dom.dataset.dom; state.shuffle = 0; render(); return; }
+  const time = e.target.closest("[data-time]");
+  if (time) { state.time = time.dataset.time; state.shuffle = 0; render(); return; }
   if (e.target.closest("#shuffle-btn")) { state.shuffle++; render(); $("shuffle-btn").focus(); return; }
   const t = e.target.closest("[data-tried]");
   if (t) {
@@ -2289,8 +2363,9 @@ document.addEventListener("click", e => {
     document.querySelectorAll(`[data-tried="${id}"]`).forEach(b => {
       const on = state.tried.has(id);
       b.setAttribute("aria-pressed", String(on));
-      b.innerHTML = GLYPHS.heart + (on ? "We did this" : "Mark as done");
+      b.innerHTML = GLYPHS.heart + (on ? "Tried it!" : "We tried it");
     });
+    renderHeader();
   }
 });
 
@@ -2298,6 +2373,7 @@ function openSetup() {
   $("baby-name").value = state.name;
   $("baby-dob").value = state.dob || "";
   $("baby-dob").max = isoDate(today);
+  document.querySelector(`[name="pron"][value="${state.pron}"]`).checked = true;
   $("setup").hidden = false;
   $("example-note").hidden = true;
   $("baby-name").focus();
@@ -2312,6 +2388,8 @@ $("setup").addEventListener("submit", e => {
   $("baby-dob").setCustomValidity("");
   state.name = $("baby-name").value.trim();
   state.dob = $("baby-dob").value;
+  state.pron = document.querySelector('[name="pron"]:checked').value;
+  store.set("pron", state.pron);
   store.set("name", state.name);
   store.set("dob", state.dob);
   state.shuffle = 0;
@@ -2347,7 +2425,7 @@ $("loc-form").addEventListener("submit", async e => {
     if (p) setLoc(p); else showLocErr("We couldn’t find that place. Try a nearby city.");
   } catch (err) {
     showLocErr(SANDBOXED
-      ? "Place search doesn’t work inside this view. Open the app in a regular browser, or pick today’s weather below."
+      ? "Place search doesn’t work inside this view. Open the app in a regular browser, or pick today’s weather under More ideas."
       : "Couldn’t reach the weather service. Check your connection and try again.");
   }
   $("loc-submit").textContent = "Find weather";
