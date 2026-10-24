@@ -6,15 +6,15 @@
 <style>
 /* Layout: one column app. Baby + season header, filter rail, "today's pick" beside a milestone note, then a grid of activity cards. The season sets the accent. */
 :root {
-  --bg: #f3f2f6;
-  --surface: #ffffff;
-  --sunk: #ebe9f0;
-  --ink: #23212b;
-  --muted: #676476;
-  --line: #dedbe6;
-  --body: #b8492a;
+  --bg: #f2f0ec;
+  --surface: #fefdfb;
+  --sunk: #e9e6e0;
+  --ink: #26231f;
+  --muted: #6b655d;
+  --line: #ddd8d0;
+  --body: #2f7d62;
   --mind: #2a66a8;
-  --heart: #a8326f;
+  --heart: #b8476a;
   --halloween: #d0650f;
   --fall: #9c5a1b;
   --thanksgiving: #8d6418;
@@ -31,16 +31,16 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #15141a; --surface: #1e1d25; --sunk: #26252e; --ink: #ecebf2; --muted: #a3a0b1; --line: #34323e;
-    --body: #f08a68; --mind: #7fb1ea; --heart: #ec8dc0;
+    --bg: #171513; --surface: #201e1b; --sunk: #2a2724; --ink: #eeebe6; --muted: #a9a39a; --line: #37332e;
+    --body: #6cc7a4; --mind: #7fb1ea; --heart: #ef93ac;
     --halloween: #f59a4a; --fall: #dc9a58; --thanksgiving: #dcae5e; --holidays: #6fcb9f; --winter: #8fbbe6;
     --valentine: #f08ca2; --spring: #98d282; --summer: #f1c64e; --everyday: #aa9ef2;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #15141a; --surface: #1e1d25; --sunk: #26252e; --ink: #ecebf2; --muted: #a3a0b1; --line: #34323e;
-  --body: #f08a68; --mind: #7fb1ea; --heart: #ec8dc0;
+  --bg: #171513; --surface: #201e1b; --sunk: #2a2724; --ink: #eeebe6; --muted: #a9a39a; --line: #37332e;
+  --body: #6cc7a4; --mind: #7fb1ea; --heart: #ef93ac;
   --halloween: #f59a4a; --fall: #dc9a58; --thanksgiving: #dcae5e; --holidays: #6fcb9f; --winter: #8fbbe6;
   --valentine: #f08ca2; --spring: #98d282; --summer: #f1c64e; --everyday: #aa9ef2;
   color-scheme: dark;
@@ -2176,7 +2176,7 @@ function renderGrid(list, pick, topped) {
   }
   $("grid").innerHTML = withName(rest.map(a => {
     const o = primaryOcc(a);
-    return `<article class="card${a._later ? " later" : ""}" data-occ="${o}">
+    return `<article class="card${a._later ? " later" : ""}">
       <div class="occ">${GLYPHS[o]}${OCCASIONS[o].label}</div>
       <h3>${a.title}</h3>
       <p class="short">${a.short}</p>
