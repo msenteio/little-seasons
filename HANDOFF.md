@@ -18,7 +18,11 @@ Little Seasons is a single-page web app that suggests play ideas for babies and 
 | `little-seasons.html` | **The source. Edit this one.** It's written as a Claude artifact body (no `<!doctype>`/`<head>`/`<body>`; the artifact viewer adds those). |
 | `index.html` | The hosted page, **generated** by `build.mjs`. Don't edit it by hand. |
 | `build.mjs` | Wraps the source in a full HTML document (doctype, viewport, meta description, favicon, safe-area padding) and writes `index.html`. It splits the file at `<div class="wrap"`, so keep that element. |
+| `images/share-card.png` | The 1200×630 preview image shown when the link is shared or embedded (iMessage, Slack, Facebook, LinkedIn, X). Made from `images/share-card.html`; the re-render command is at the top of that file. |
+| `images/apple-touch-icon.png` | 180×180 home-screen icon. |
 | `README.md` | Short description and build command. |
+
+`build.mjs` also writes the share tags (Open Graph, Twitter card, structured data). They name **Michelle Senteio** as the author and point at the live site's absolute URLs, so the preview image only shows up once it's pushed.
 
 **After every change to the source:**
 

@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- Template for share-card.png, the preview image shown when the site link is shared or embedded.
+     Re-render after editing (1200×630):
+     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+       --window-size=1200,630 --screenshot=images/share-card.png images/share-card.html -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@500;600;700&display=swap">
+<style>
+:root {
+  --bg: #f2f0ec; --surface: #fefdfb; --ink: #26231f; --muted: #6b655d; --line: #ddd8d0;
+  --body: #2f7d62; --mind: #2a66a8; --heart: #b8476a;
+  --fall: #d0650f; --summer: #a87a00; --everyday: #5f50c0;
+}
+* { box-sizing: border-box; margin: 0 }
+html, body { width: 1200px; height: 630px; overflow: hidden }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: "Figtree", system-ui, sans-serif;
+  display: grid; grid-template-columns: 1fr 470px; gap: 56px;
+  padding: 72px 76px; position: relative;
+}
+body::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 14px;
+  background: linear-gradient(90deg, var(--fall) 0 25%, var(--body) 25% 50%, var(--mind) 50% 75%, var(--heart) 75%);
+}
+.left { display: flex; flex-direction: column }
+.brand { display: flex; align-items: center; gap: 18px; font: 700 34px "Bricolage Grotesque", sans-serif }
+.brand svg { width: 64px; height: 64px }
+h1 { font: 700 66px/1.02 "Bricolage Grotesque", sans-serif; letter-spacing: -0.02em; margin-top: 44px }
+p { font-size: 27px; line-height: 1.38; color: var(--muted); margin-top: 22px; max-width: 560px }
+.by { margin-top: auto; font-size: 23px; color: var(--muted) }
+.by b { color: var(--ink); font-weight: 700 }
+.right { display: flex; flex-direction: column; gap: 18px; justify-content: center }
+.card {
+  background: var(--surface); border: 2px solid var(--line); border-radius: 22px;
+  padding: 22px 26px; border-left: 10px solid var(--c);
+}
+.card h2 { font: 700 28px "Bricolage Grotesque", sans-serif }
+.tags { display: flex; gap: 10px; margin-top: 12px }
+.tag { font-size: 18px; font-weight: 600; padding: 5px 13px; border-radius: 99px; background: color-mix(in srgb, var(--t) 13%, white); color: var(--t) }
+</style>
+</head>
+<body>
+<div class="left">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#d0650f"/><path d="M12 7c-5 0-8 2.7-8 6.5S7 20 12 20s8-2.7 8-6.5S17 7 12 7Z" fill="none" stroke="#fff" stroke-width="1.6"/><path d="M12 7c0-2 1-3.3 2.5-3.8" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Little Seasons
+  </div>
+  <h1>Play ideas for your baby, made for today</h1>
+  <p>Matched to their age, the season and the weather outside. Ages 0–3, backed by the CDC and AAP.</p>
+  <div class="by">By <b>Michelle Senteio</b></div>
+</div>
+<div class="right">
+  <div class="card" style="--c: var(--fall)">
+    <h2>Pumpkin tummy time</h2>
+    <div class="tags"><span class="tag" style="--t: var(--body)">Moving</span><span class="tag" style="--t: var(--fall)">5 min</span></div>
+  </div>
+  <div class="card" style="--c: var(--everyday)">
+    <h2>Make up her song</h2>
+    <div class="tags"><span class="tag" style="--t: var(--heart)">Feelings &amp; bonding</span><span class="tag" style="--t: var(--everyday)">5 min</span></div>
+  </div>
+  <div class="card" style="--c: var(--summer)">
+    <h2>Painting with water</h2>
+    <div class="tags"><span class="tag" style="--t: var(--body)">Moving</span><span class="tag" style="--t: var(--mind)">Thinking</span><span class="tag" style="--t: var(--summer)">15 min</span></div>
+  </div>
+</div>
+</body>
+</html>
