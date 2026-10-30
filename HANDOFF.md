@@ -19,7 +19,10 @@ Little Seasons is a single-page web app that suggests play ideas for babies and 
 | `index.html` | The hosted page, **generated** by `build.mjs`. Don't edit it by hand. |
 | `build.mjs` | Wraps the source in a full HTML document (doctype, viewport, meta description, favicon, safe-area padding) and writes `index.html`. It splits the file at `<div class="wrap"`, so keep that element. |
 | `images/share-card.png` | The 1200×630 preview image shown when the link is shared or embedded (iMessage, Slack, Facebook, LinkedIn, X). Made from `images/share-card.html`; the re-render command is at the top of that file. |
-| `images/apple-touch-icon.png` | 180×180 home-screen icon. |
+| `images/apple-touch-icon.png` | 180×180 home-screen icon for iPhone. |
+| `images/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` | Android home-screen icons. The maskable one has a smaller pumpkin so Android can crop it to a circle. |
+| `manifest.webmanifest` | **Generated** by `build.mjs`. Name, colors and icons for "Add to Home Screen". |
+| `sw.js` | Service worker, so the app opens with no signal once it has been visited. The page loads fresh from the network when it answers within 3 seconds, so updates still reach people. If you add files to `SHELL`, bump `CACHE` (`little-seasons-v1` → `v2`). |
 | `README.md` | Short description and build command. |
 
 `build.mjs` also writes the share tags (Open Graph, Twitter card, structured data). They name **Michelle Senteio** as the author and point at the live site's absolute URLs, so the preview image only shows up once it's pushed.
@@ -83,19 +86,13 @@ This is based on the latest session and the commit history. Earlier sessions are
 
 ## Suggested next steps
 
-**Testing (not done yet):**
-- Try it on a real iPhone in Safari and a real Android phone in Chrome.
-- Test location three ways: allowed, denied, and denied followed by typing a city.
-- Test southern and tropical cities, such as Sydney and Singapore.
-- Turn off the connection after the page loads, or use a slow one, and check that the app still works.
-- Check that saved settings come back after closing the tab, and that a private window still works with nothing saved.
-- Step through every age band to make sure none comes up empty.
-- Check dark mode and large text sizes.
+**Testing:** done in a browser on 2026-10-30. Every age from 0 to 36 months × every week of the year × six climates × every weather and filter (about 1.5 million combinations) always shows at least 4 ideas. Location allowed, denied, and denied followed by typing a city all work. Sydney, Singapore, Nairobi, Honolulu and Minneapolis behave correctly, and places in the tropics drop autumn, winter and spring in favor of year-round "Warm days". Offline, large text and dark mode were checked too. Still to do:
+- Try it on a real iPhone in Safari and a real Android phone in Chrome, including Add to Home Screen. On iPhone, the home-screen app keeps its saved details separately from Safari, so the parent enters the baby's details once more there.
 - Have 3–5 parents use it for a week.
 
 **Publishing:**
-1. Add a short "Not medical advice" line and a privacy note: location is only used to look up weather and nothing is stored on a server.
+1. ~~Not-medical-advice and privacy notes~~ (done, at the bottom of the page).
 2. Optional: a custom domain, set in the repo's Pages settings.
-3. Optional: make it installable on the home screen and usable offline by adding a web app manifest and a service worker.
+3. ~~Installable on the home screen and usable offline~~ (done: `manifest.webmanifest` and `sw.js`).
 4. App stores only if really wanted. You'd wrap the site with Capacitor, and need a $99/year Apple developer account or a one-time $25 Google one. Apple often rejects apps that are mostly a website in a wrapper, and family apps get stricter privacy review. Do the home-screen version first.
 5. Optional: a GitHub Actions workflow that runs `node build.mjs` and deploys to Pages on every push. That would also fix the problem of Pages not rebuilding on its own.

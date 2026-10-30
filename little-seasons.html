@@ -220,6 +220,9 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size:
 .sources ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px }
 .sources a { color: var(--ink) }
 .sources p { max-width: 75ch }
+.notes { display: grid; gap: 10px; background: var(--sunk); border-radius: var(--r); padding: 14px 16px }
+.notes b { color: var(--ink) }
+.loc-note { width: 100%; margin: 0; font-size: .85rem; color: var(--muted) }
 
 @media (prefers-reduced-motion: no-preference) {
   .pick { animation: rise .35s ease-out }
@@ -270,6 +273,7 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size:
       <button class="ghost" type="button" id="geo-btn">Use my location</button>
       <button class="ghost" type="button" id="loc-cancel">Cancel</button>
       <p class="err" id="loc-err" hidden></p>
+      <p class="loc-note">Only used to check the weather. It stays on this device.</p>
     </form>
   </header>
 
@@ -297,7 +301,10 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size:
     <p>Each activity is matched to the skills most babies are building at that age, using the CDC’s milestone checklists (the skills 75% or more of children show by each age) and the American Academy of Pediatrics. Many are adapted from Montessori infant and toddler practice: real objects, a calm uncluttered space, following the child’s lead, and letting them do it themselves. The “serve and return” back-and-forth from Harvard’s Center on the Developing Child runs through all of them.</p>
     <ul id="source-list"></ul>
     <p>Every baby develops on their own timeline, and age ranges here are guides, not rules. Always supervise, check that objects are too big to swallow, and ask your pediatrician about anything that worries you.</p>
-    <p>Live weather from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open‑Meteo</a>. Your town is saved only in this browser.</p>
+    <div class="notes">
+      <p><b>Not medical advice.</b> Little Seasons offers play ideas, not medical or developmental advice. If you have questions about your child’s health, growth or development, talk to your pediatrician or another qualified professional. In an emergency, call your local emergency number.</p>
+      <p><b>Your privacy.</b> There are no accounts, ads or tracking. Your baby’s name, birthday and town are saved only on this device, and you can clear them anytime by clearing this site’s data in your browser. Your location is used only to look up the weather from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open‑Meteo</a>, and is never sent anywhere else or stored on a server.</p>
+    </div>
   </footer>
 </div>
 
@@ -479,8 +486,8 @@ const ACTIVITIES = [
     need: "A door, stuffed animals, a small basket, a few toys or crackers as “treats”",
     steps: ["Seat stuffed animals behind a door.", "Help her knock. Open the door with a cheerful voice.", "Have the animal put a toy in her basket. Model “thank you” and a wave.", "Swap roles so she gets to be the one giving."],
     why: "Practicing a new event in play makes the real thing feel familiar and less overwhelming. Taking turns as giver also builds early empathy.",
-    safety: "",
-    src: ["aapplay", "cdc"] },
+    safety: "Use treats and toys too big to fit in her mouth. Skip hard candy, gum and whole nuts, which are choking hazards for children under 4.",
+    src: ["aapplay", "cdc", "choke"] },
   { id: "gourd-shakers", occ: ["halloween", "fall", "thanksgiving"], min: 6, max: 24, dom: ["body", "mind"], mins: 10,
     title: "Gourd shaker band",
     short: "Dried gourds rattle like maracas. Shake them to music and take turns.",
@@ -763,7 +770,7 @@ const ACTIVITIES = [
     need: "A window, optional bird feeder outside",
     steps: ["Hold her by the window.", "When a bird lands, point and say “Bird! Tweet tweet.”", "Wait to see if she looks where you’re pointing.", "For toddlers, ask her to show you the bird."],
     why: "Looking where you point, and later pointing herself (a CDC 15‑month milestone), is called joint attention, a key building block for language.",
-    safety: "",
+    safety: "Keep her away from window blind cords, which can wrap around a child’s neck, and never sit her on a sill or near an open window.",
     src: ["cdc", "harvard"] },
   { id: "puddle-stomp", occ: ["spring", "fall"], min: 15, max: 36, dom: ["body", "heart"], mins: 20,
     title: "Puddle stomp",
@@ -1317,7 +1324,7 @@ const ACTIVITIES = [
     need: "A cold window",
     steps: ["Breathe on the glass and watch it fog.", "Draw a circle with your finger.", "Help her fog it and draw her own marks.", "Watch the drawings fade and start again."],
     why: "Making marks is early writing, and seeing her breath fog the glass is a little science lesson.",
-    safety: "",
+    safety: "Keep her away from blind cords and stay beside her at the window. Never let her climb onto a sill.",
     src: ["aapplay"] },
   { id: "wi-mitten-match", occ: ["winter"], min: 18, max: 36, dom: ["mind"], mins: 10,
     title: "Mitten and sock matching",
@@ -1455,8 +1462,8 @@ const ACTIVITIES = [
     need: "Printed family photos, tape",
     steps: ["Tape photos low on the wall or a box beside her play mat.", "During tummy time, point and name each person.", "Make the face from the photo yourself: “Grandma smiles like this!”", "Swap photos now and then."],
     why: "Babies love faces most of all. Familiar faces motivate her to lift her head, and names build early words.",
-    safety: "",
-    src: ["tummy", "cdc"] },
+    safety: "Tape photos down flat on every edge and check them often. Once she can grab, move the board out of reach so paper and tape don’t end up in her mouth.",
+    src: ["tummy", "cdc", "choke"] },
   { id: "va-who-loves-you", occ: ["valentine"], min: 6, max: 36, dom: ["heart", "mind"], mins: 10,
     title: "Who loves you?",
     short: "Snuggle up and name everyone who loves her, using photos if you have them.",
@@ -1513,7 +1520,7 @@ const ACTIVITIES = [
     need: "Light scarves, gentle music",
     steps: ["Hold a scarf in each hand and flutter.", "Fly it down to land on her nose.", "Hand her one and dance together.", "Slow down and “land” when the song ends."],
     why: "Copying movement builds body awareness, and dancing together is pure connection.",
-    safety: "",
+    safety: "Stay with her while she plays with scarves, and put them away afterwards. Never leave scarves or loose cloth near a sleeping baby.",
     src: ["aapplay"] },
   { id: "sp-umbrella", occ: ["spring", "fall"], min: 0, max: 18, dom: ["mind", "heart"], mins: 10, where: "out", needs: ["rainy"],
     title: "Rain on the umbrella",
@@ -1765,8 +1772,8 @@ const ACTIVITIES = [
     need: "Plastic containers with loose lids",
     steps: ["Hide a toy inside one.", "Show her how to pull the lid off.", "Let her try to put it back on.", "Mix up the lids for a toddler challenge."],
     why: "Putting things in and taking them out is a 9‑month milestone, and matching lids builds problem‑solving.",
-    safety: "",
-    src: ["cdc", "shelf"] },
+    safety: "Use lids and containers too big to fit in her mouth, and skip any that held medicine or cleaning products.",
+    src: ["cdc", "shelf", "choke"] },
   { id: "ev-stack-cups", occ: ["everyday"], min: 9, max: 24, dom: ["body", "mind"], mins: 10,
     title: "Stacking cups",
     short: "Nest and stack cups into a tower, then knock it down.",
@@ -1935,7 +1942,9 @@ async function loadWeather(force) {
     store.set("live", state.live);
     state.liveStatus = "ok";
   } catch (e) {
-    state.live = null; state.liveStatus = "error";
+    // Offline or the service is down: keep this morning's reading rather than none
+    const recent = cached && cached.lat === loc.lat && cached.lon === loc.lon && Date.now() - cached.at < 6 * 3600000;
+    state.live = recent ? cached : null; state.liveStatus = recent ? "ok" : "error";
   }
   state.shuffle = 0;
   render();
@@ -1983,9 +1992,13 @@ function currentOccasions(date) {
   return Object.keys(OCCASIONS).filter(k => k !== "everyday" && inRanges(date, occRanges(k)));
 }
 function climate() { return state.loc && state.loc.climate ? state.loc.climate : null; }
+// Between the tropics there are no real seasons: warm-weather ideas run all year, the others are hidden
+function tropical() { return !!(state.loc && Math.abs(state.loc.lat) < 23.5 && climate() && !climate().cold); }
+function occLabel(k) { return k === "summer" && tropical() ? "Warm days" : OCCASIONS[k].label; }
 // Seasons flip south of the equator; Thanksgiving only where it's celebrated
 function occRanges(k) {
   const o = OCCASIONS[k], c = climate();
+  if (tropical() && ["fall", "winter", "spring", "summer"].includes(k)) return k === "summer" ? [[1, 1, 12, 31]] : [];
   if (k === "thanksgiving") {
     const cc = state.loc && state.loc.country;
     if (!cc || cc === "US") return o.ranges;
@@ -2123,12 +2136,12 @@ function withName(html) {
 }
 function primaryOcc(a) {
   const occs = activeOccs();
-  return a.occ.find(o => occs.includes(o)) || a.occ[0];
+  return a.occ.find(o => occs.includes(o)) || (a.occ.includes("everyday") ? "everyday" : a.occ[0]);
 }
 function renderHeader(age) {
   const n = babyName();
   const lead = activeOccs()[0];
-  const occWord = state.occ === "now" ? OCCASIONS[lead].label : OCCASIONS[state.occ].label;
+  const occWord = occLabel(state.occ === "now" ? lead : state.occ);
   const who = n ? esc(n) : "your baby";
   $("headline").innerHTML = `${occWord} play for ${who}, <em>${ageLabel(babyDob(), today)}</em>`;
   const known = !!parseDate(state.dob);
@@ -2150,10 +2163,10 @@ function renderRails() {
     b.type = "button"; b.className = "chip"; b.dataset.occ = k;
     b.setAttribute("aria-pressed", String(state.occ === k));
     if (k === "now") {
-      const names = nowOccs.length ? nowOccs.map(o => OCCASIONS[o].label).join(" + ") : "Any day";
+      const names = nowOccs.length ? nowOccs.map(occLabel).join(" + ") : "Any day";
       b.innerHTML = `${GLYPHS[nowOccs[0] || "everyday"]}<span>${names}</span><span class="now">Now</span>`;
     } else {
-      b.innerHTML = `${GLYPHS[k]}<span>${OCCASIONS[k].label}</span>`;
+      b.innerHTML = `${GLYPHS[k]}<span>${occLabel(k)}</span>`;
     }
     occRail.appendChild(b);
   });
@@ -2207,7 +2220,7 @@ function renderPick(list) {
   const a = pool[(seed % Math.min(3, pool.length) + state.shuffle) % pool.length];
   el.innerHTML = withName(`
     <div class="pick-head">
-      <span class="eyebrow">Today’s idea · ${OCCASIONS[primaryOcc(a)].label}</span>
+      <span class="eyebrow">Today’s idea · ${occLabel(primaryOcc(a))}</span>
     </div>
     <div style="display:grid;gap:8px;position:relative;z-index:1">
       <h2>${a.title}</h2>
@@ -2249,7 +2262,7 @@ function renderGrid(list, pick, topped) {
   $("grid").innerHTML = withName(rest.map(a => {
     const o = primaryOcc(a);
     return `<article class="card${a._later ? " later" : ""}">
-      <div class="occ">${GLYPHS[o]}${OCCASIONS[o].label}</div>
+      <div class="occ">${GLYPHS[o]}${occLabel(o)}</div>
       <h3>${a.title}</h3>
       <p class="short">${a.short}</p>
       <div class="meta">${domTags(a)}<span>${a.mins} min</span>${a._fits ? `<span class="badge-fit">Good for today’s weather</span>` : ""}${a._later ? `<span class="badge-later">Save for a nicer day</span>` : ""}</div>
@@ -2316,6 +2329,7 @@ function climateNote() {
   const c = climate();
   if (!c) return "";
   const parts = [];
+  if (tropical()) return "Close to the equator, so ideas follow the weather instead of the seasons.";
   if (c.south) parts.push("Southern hemisphere, so the seasons are flipped.");
   if (!c.cold) parts.push("Winters stay mild here, so ideas skip fall leaves and snow and add warm‑weather ones.");
   else if (!c.snow) parts.push("Snow is rare here, so snow activities are hidden.");

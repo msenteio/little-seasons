@@ -31,6 +31,25 @@ const jsonLd = JSON.stringify({
   author: { "@type": "Person", name: author },
 });
 
+// Lets phones add the site to the home screen as its own app (see sw.js for offline use).
+const manifest = {
+  id: "./",
+  name: title,
+  short_name: title,
+  description,
+  start_url: "./",
+  scope: "./",
+  display: "standalone",
+  background_color: "#f2f0ec",
+  theme_color: "#f2f0ec",
+  categories: ["lifestyle", "kids", "education"],
+  icons: [
+    { src: "images/icon-192.png", sizes: "192x192", type: "image/png" },
+    { src: "images/icon-512.png", sizes: "512x512", type: "image/png" },
+    { src: "images/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+  ],
+};
+
 const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -42,6 +61,12 @@ const html = `<!doctype html>
 <link rel="canonical" href="${site}">
 <link rel="icon" href="${icon}">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f2f0ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${title}">
 <meta property="og:title" content="${title}">
@@ -62,9 +87,11 @@ ${src.slice(0, split).trim()}
 </head>
 <body>
 ${src.slice(split).trim()}
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
 </body>
 </html>
 `;
 
 writeFileSync(new URL("./index.html", import.meta.url), html);
-console.log("Wrote index.html");
+writeFileSync(new URL("./manifest.webmanifest", import.meta.url), JSON.stringify(manifest, null, 2) + "\n");
+console.log("Wrote index.html and manifest.webmanifest");
