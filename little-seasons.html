@@ -73,8 +73,13 @@ p { margin: 0 }
 button, input { font: inherit; color: inherit }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px }
 
+/* Two views: home (today's idea + ways in) and the ideas list */
+[data-view="home"] .ideas-only, [data-view="ideas"] .home-only { display: none !important }
+
 /* Header */
 .top { display: grid; gap: 14px }
+.brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px }
+.brand { text-decoration: none }
 .brand { display: flex; align-items: center; gap: 10px; color: var(--accent); font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: .02em }
 .brand svg { width: 26px; height: 26px }
 .hello { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px }
@@ -134,7 +139,7 @@ form.setup input { border: 1px solid var(--line); background: var(--bg); border-
 }
 
 /* Pick + milestones */
-.feature { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; align-items: start }
+.feature { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start }
 @media (max-width: 820px) { .feature { grid-template-columns: minmax(0, 1fr) } }
 .pick {
   background: var(--surface); border-radius: calc(var(--r) + 4px); padding: 24px;
@@ -181,10 +186,32 @@ form.setup input { border: 1px solid var(--line); background: var(--bg); border-
 .shuffle { display: inline-flex; align-items: center; gap: 6px }
 .shuffle svg { width: 16px; height: 16px }
 
-/* More ideas */
+/* Find an idea */
+.find { display: grid; gap: 12px; align-content: start }
+.find h2 { font-size: 1.25rem }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px }
+.tile {
+  display: grid; gap: 4px; align-content: start; text-align: left; min-height: 96px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; cursor: pointer;
+}
+.tile:hover { border-color: var(--muted) }
+.tile.wide { grid-column: 1 / -1; min-height: 0 }
+.tile-icon { color: var(--accent); height: 24px; display: flex; align-items: center }
+.tile-icon svg { width: 22px; height: 22px }
+.tile-icon .dot { width: 14px; height: 14px }
+.tile-icon .heart-ico { color: var(--heart) }
+.tile b { font-family: var(--font-display); font-size: 1.05rem; line-height: 1.2 }
+.tile span.n { font-size: .85rem; color: var(--muted) }
+details.how summary { font-size: 1rem }
+details.how .pick-cols { padding-top: 12px }
+
+/* Ideas list */
 .browse { display: grid; gap: 16px }
 .list-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px }
-.list-head h2 { font-size: 1.4rem }
+.list-head h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700 }
+.list-head h1:focus { outline: none }
+.list-head #only-chip:empty { display: none }
+.list-head #only-chip { width: 100% }
 .list-head p { color: var(--muted); font-size: .92rem }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 10px; align-content: start }
@@ -232,13 +259,16 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size:
 
 <div class="wrap" id="app" data-occ="everyday">
   <header class="top">
-    <div class="brand"><span id="brand-glyph"></span>Little Seasons</div>
-    <div class="hello">
+    <div class="brand-row">
+      <a class="brand" href="#" id="brand"><span id="brand-glyph"></span>Little Seasons</a>
+      <button class="ghost back ideas-only" id="back-btn" type="button">← Home</button>
+    </div>
+    <div class="hello home-only">
       <h1 id="headline">Play ideas for your baby</h1>
       <button class="ghost" id="edit-btn" type="button">Edit baby</button>
     </div>
-    <p class="tried-count" id="tried-count" hidden></p>
-    <div class="example" id="example-note" hidden>
+    <p class="tried-count home-only" id="tried-count" hidden></p>
+    <div class="example home-only" id="example-note" hidden>
       <span><b>Showing ideas for a 7‑month‑old.</b> Add your baby’s birthday and every idea will fit their age.</span>
       <button class="solid" type="button" id="example-btn">Add my baby</button>
     </div>
@@ -260,7 +290,7 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size:
       <button class="solid" type="submit">Save</button>
       <button class="ghost" type="button" id="cancel-btn">Cancel</button>
     </form>
-    <div class="weather" id="weather" aria-live="polite">
+    <div class="weather home-only" id="weather" aria-live="polite">
       <span class="wx-icon" id="wx-icon"></span>
       <div class="wx-main"><div class="wx-line" id="wx-line"></div><div class="wx-tip" id="wx-tip"></div><div class="wx-tip" id="wx-climate" hidden></div></div>
       <button class="ghost" type="button" id="loc-btn">Add location</button>
@@ -277,15 +307,20 @@ details ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size:
     </form>
   </header>
 
-  <section class="feature">
+  <section class="feature home-only">
     <article class="pick" id="pick" aria-live="polite"></article>
-    <aside class="milestones" id="milestones"></aside>
+    <nav class="find" aria-labelledby="find-title">
+      <h2 id="find-title">Find an idea</h2>
+      <div class="tiles" id="tiles"></div>
+    </nav>
   </section>
+  <aside class="milestones home-only" id="milestones"></aside>
 
-  <section class="browse">
+  <section class="browse ideas-only">
     <div class="list-head">
-      <h2 id="list-title">More ideas</h2>
+      <h1 id="list-title">Ideas</h1>
       <p id="list-count"></p>
+      <div id="only-chip"></div>
     </div>
     <div class="filters" role="group" aria-label="Filters">
       <div class="rail" id="time-rail"><span class="rail-label">Time I have</span></div>
@@ -1876,6 +1911,10 @@ const GLYPHS = {
   windy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 14h15a3 3 0 1 1-3 3"/><path d="M3 19h6"/></svg>',
   cold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0Z"/><path d="M12 9v7"/></svg>',
   shuffle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h3c4 0 6 10 10 10h3"/><path d="M4 17h3c1.6 0 2.8-1.6 3.9-3.5M13.1 9.5C14.2 8.6 15.5 7 17 7h3"/><path d="m17 4 3 3-3 3M17 14l3 3-3 3"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+  tree: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-5"/><path d="M12 3c-3.3 0-6 2.6-6 5.8 0 .6.1 1.2.3 1.7A4 4 0 0 0 8 16h8a4 4 0 0 0 1.7-5.5c.2-.5.3-1.1.3-1.7C18 5.6 15.3 3 12 3Z"/></svg>',
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></svg>',
+  grid: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>',
   heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.6 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>'
 };
 
@@ -2053,31 +2092,47 @@ const state = {
   loc: store.get("loc", null),
   wxPick: "auto",
   live: null,
-  liveStatus: "idle"
+  liveStatus: "idle",
+  only: "",   // "", "tried", "out" or "in": narrows the ideas list beyond the filter rails
+  title: "",  // the tile that opened the ideas list, until a filter changes
+  view: location.hash === "#ideas" ? "ideas" : "home"
 };
+// Home always shows today's idea with no filters, whatever was picked on the ideas page
+const HOME = { occ: "now", dom: "all", time: "any", only: "" };
 function currentWx() { return state.wxPick === "auto" ? (state.live ? state.live.cond : null) : state.wxPick; }
 let nowOccs = currentOccasions(today);
 
 function babyDob() { return parseDate(state.dob) || exampleDob; }
 function babyName() { return state.name.trim(); }
 
-function activeOccs() { return state.occ === "now" ? (nowOccs.length ? nowOccs : ["everyday"]) : [state.occ]; }
+function activeOccs(f = state) {
+  if (f.occ === "now") return nowOccs.length ? nowOccs : ["everyday"];
+  if (f.occ === "all") return [...nowOccs, "everyday"];
+  return [f.occ];
+}
 
-function matches() {
+function matches(f = state) {
   const age = ageInMonths(babyDob(), today);
-  const occs = activeOccs();
+  const occs = activeOccs(f);
   const W = currentWx();
   const storm = !!(W && state.wxPick === "auto" && state.live && state.live.thunder);
   const byAge = ACTIVITIES.filter(a => age >= a.min && age <= a.max && climateOk(a));
-  const byDom = a => (state.dom === "all" || a.dom.includes(state.dom)) && (state.time === "any" || a.mins <= +state.time);
+  const byDom = a => (f.dom === "all" || a.dom.includes(f.dom)) && (f.time === "any" || a.mins <= +f.time);
   const needsOk = a => !a.needs || !W || a.needs.includes(W);
+  const whereOk = a => f.only === "out" ? a.where !== "in" : f.only === "in" ? a.where !== "out" : true;
   const fits = a => !!W && ((a.wx || []).includes(W) || (a.needs || []).includes(W));
-  let list = byAge.filter(a => a.occ.some(o => occs.includes(o)));
-  // In season mode, today's weather also pulls in matching everyday ideas
-  if (state.occ === "now" && W) list = list.concat(byAge.filter(a => a.occ.includes("everyday") && fits(a) && !list.includes(a)));
-  list = list.filter(byDom).filter(needsOk);
+  let list;
+  if (f.only === "tried") {
+    // Everything she's tried, even ideas she has since outgrown or that are out of season
+    list = ACTIVITIES.filter(a => state.tried.has(a.id)).filter(byDom);
+  } else {
+    list = byAge.filter(a => a.occ.some(o => occs.includes(o)));
+    // In season mode, today's weather also pulls in matching everyday ideas
+    if (f.occ === "now" && W) list = list.concat(byAge.filter(a => a.occ.includes("everyday") && fits(a) && !list.includes(a)));
+    list = list.filter(byDom).filter(needsOk).filter(whereOk);
+  }
   let topped = false;
-  if (state.occ === "now" && list.length < 4) {
+  if (f.occ === "now" && !f.only && list.length < 4) {
     const extra = byAge.filter(a => a.occ.includes("everyday") && !a.needs && !list.includes(a)).filter(byDom);
     if (extra.length) { list = list.concat(extra); topped = true; }
   }
@@ -2140,8 +2195,8 @@ function primaryOcc(a) {
 }
 function renderHeader(age) {
   const n = babyName();
-  const lead = activeOccs()[0];
-  const occWord = occLabel(state.occ === "now" ? lead : state.occ);
+  const lead = activeOccs(state.view === "home" ? HOME : state)[0];
+  const occWord = occLabel(activeOccs(HOME)[0]);
   const who = n ? esc(n) : "your baby";
   $("headline").innerHTML = `${occWord} play for ${who}, <em>${ageLabel(babyDob(), today)}</em>`;
   const known = !!parseDate(state.dob);
@@ -2155,7 +2210,7 @@ function renderHeader(age) {
 }
 
 function renderRails() {
-  const occKeys = ["now", ...Object.keys(OCCASIONS).filter(k => !nowOccs.includes(k) && (k === "everyday" || occRanges(k).length))];
+  const occKeys = ["now", "all", ...Object.keys(OCCASIONS).filter(k => !nowOccs.includes(k) && (k === "everyday" || occRanges(k).length))];
   const occRail = $("occ-rail");
   occRail.querySelectorAll(".chip").forEach(c => c.remove());
   occKeys.forEach(k => {
@@ -2165,6 +2220,8 @@ function renderRails() {
     if (k === "now") {
       const names = nowOccs.length ? nowOccs.map(occLabel).join(" + ") : "Any day";
       b.innerHTML = `${GLYPHS[nowOccs[0] || "everyday"]}<span>${names}</span><span class="now">Now</span>`;
+    } else if (k === "all") {
+      b.innerHTML = `${GLYPHS.grid}<span>All ideas</span>`;
     } else {
       b.innerHTML = `${GLYPHS[k]}<span>${occLabel(k)}</span>`;
     }
@@ -2206,6 +2263,7 @@ function renderRails() {
   });
 }
 
+let pickOpen = false;
 function renderPick(list) {
   const el = $("pick");
   if (!list.length) {
@@ -2214,7 +2272,7 @@ function renderPick(list) {
       <p class="lede">Try “Any amount” of time, “Everything”, or another season below.</p>`;
     return null;
   }
-  const seed = hash(isoDate(today) + babyName() + state.occ + state.dom);
+  const seed = hash(isoDate(today) + babyName());
   const pool = list.some(x => !x._later) ? list.filter(x => !x._later) : list;
   // Start among the top few, then "Another idea" walks down the ranking
   const a = pool[(seed % Math.min(3, pool.length) + state.shuffle) % pool.length];
@@ -2228,14 +2286,17 @@ function renderPick(list) {
       <div class="meta">${domTags(a)}<span>About ${a.mins} min</span>${a._fits ? `<span class="badge-fit">Good for ${WEATHER[currentWx()].label.toLowerCase()} days</span>` : ""}</div>
     </div>
     <p class="need"><b>You’ll need:</b> ${a.need}</p>
-    <div class="pick-cols">
-      <div><div class="sub">How to do it</div><ol>${a.steps.map(s => `<li>${s}</li>`).join("")}</ol></div>
-      <div style="display:grid;gap:12px;align-content:start">
-        <div><div class="sub">Why it helps</div><p class="why">${a.why}</p></div>
-        ${a.safety ? `<p class="safety"><b>Safety:</b> ${a.safety}</p>` : ""}
-        ${cites(a)}
+    <details class="how"${pickOpen ? " open" : ""}>
+      <summary>How to do it</summary>
+      <div class="pick-cols">
+        <div><ol>${a.steps.map(s => `<li>${s}</li>`).join("")}</ol></div>
+        <div style="display:grid;gap:12px;align-content:start">
+          <div><div class="sub">Why it helps</div><p class="why">${a.why}</p></div>
+          ${a.safety ? `<p class="safety"><b>Safety:</b> ${a.safety}</p>` : ""}
+          ${cites(a)}
+        </div>
       </div>
-    </div>
+    </details>
     <div class="pick-foot">${triedBtn(a)}<button class="ghost shuffle" type="button" id="shuffle-btn">${GLYPHS.shuffle}Show me another</button></div>`);
   return a;
 }
@@ -2250,13 +2311,22 @@ function renderMilestones(age) {
     <p class="fine">Summarized from the <a href="${SOURCES.cdc[1]}" target="_blank" rel="noopener">CDC milestone checklists</a>. Many babies do these earlier or later.</p>`);
 }
 
-function renderGrid(list, pick, topped) {
-  const rest = list.filter(a => a !== pick);
-  $("list-title").textContent = rest.length ? "More ideas for this age" : "That’s every idea for now";
-  const n = list.length;
-  $("list-count").textContent = n + (n === 1 ? " activity" : " activities") + " match" + (topped ? ", including a few everyday favorites" : "");
+const ONLY_LABELS = { tried: "Ideas you’ve tried", out: "Outdoor ideas", in: "Indoor ideas" };
+function renderIdeasHead(n, topped) {
+  const who = babyName() ? esc(babyName()) : "your baby";
+  $("list-title").innerHTML = state.title || `Ideas for ${who}`;
+  $("list-count").textContent = n + (n === 1 ? " activity matches" : " activities match") + (topped ? ", including a few everyday favorites" : "");
+  $("only-chip").innerHTML = state.only
+    ? `<button class="chip" type="button" data-only="" aria-label="Show all ideas, not just ${ONLY_LABELS[state.only].toLowerCase()}">${ONLY_LABELS[state.only]} <span aria-hidden="true">✕</span></button>` : "";
+}
+
+function renderGrid(list, topped) {
+  const rest = list;
+  renderIdeasHead(list.length, topped);
   if (!rest.length) {
-    $("grid").innerHTML = withName(`<div class="empty">Try another season above, or check back as she grows. New ideas open up every few months.</div>`);
+    $("grid").innerHTML = withName(state.only === "tried"
+      ? `<div class="empty">Nothing marked yet. Tap “We tried it” on any idea and it will show up here.</div>`
+      : `<div class="empty">Nothing matches all of these. Try “Any amount” of time, “Everything”, or another season above. New ideas open up every few months as she grows.</div>`);
     return;
   }
   $("grid").innerHTML = withName(rest.map(a => {
@@ -2278,6 +2348,35 @@ function renderGrid(list, pick, topped) {
       </details>
       <div class="card-foot">${triedBtn(a)}</div>
     </article>`;
+  }).join(""));
+}
+
+// Ways into the ideas list from home. Each sets the filters from scratch.
+function homeTiles() {
+  const W = currentWx(), bad = !!(W && (WEATHER[W].bad || (state.live && state.live.thunder && state.wxPick === "auto")));
+  const lead = activeOccs(HOME)[0];
+  const seasonName = nowOccs.length ? nowOccs.map(occLabel).join(" & ") : "Everyday";
+  const tiles = [
+    { f: { occ: "now" }, icon: GLYPHS[lead], title: seasonName + " ideas" },
+    { f: { occ: "all", time: "5" }, icon: GLYPHS.clock, title: "Got 5 minutes?" },
+    bad ? { f: { occ: "all", only: "in" }, icon: GLYPHS.home, title: "Cozy indoor ideas" }
+        : { f: { occ: "all", only: "out" }, icon: GLYPHS.tree, title: "Get outside" },
+    ...["body", "mind", "heart"].map(k => ({ f: { occ: "all", dom: k }, icon: `<span class="dot ${k}"></span>`, title: DOMAINS[k].label })),
+    state.tried.size ? { f: { occ: "all", only: "tried" }, icon: `<span class="heart-ico">${GLYPHS.heart}</span>`, title: "Ideas you’ve tried" } : null,
+    { f: { occ: "all" }, icon: GLYPHS.grid, title: "Every idea for her age" }
+  ].filter(Boolean);
+  tiles.forEach(t => { t.f = { ...HOME, ...t.f }; });
+  return tiles;
+}
+let tiles = [];
+function renderTiles() {
+  tiles = homeTiles();
+  $("tiles").innerHTML = withName(tiles.map((t, i) => {
+    const n = matches(t.f).list.length;
+    const wide = i === tiles.length - 1 && tiles.length % 2 ? " wide" : "";
+    return `<button class="tile${wide}" type="button" data-tile="${i}">
+      <span class="tile-icon">${t.icon}</span><b>${t.title}</b><span class="n">${n} ${n === 1 ? "idea" : "ideas"}</span>
+    </button>`;
   }).join(""));
 }
 
@@ -2311,11 +2410,11 @@ function renderWeather() {
   } else if (state.liveStatus === "error") {
     line = "Couldn’t get live weather";
     tip = SANDBOXED
-      ? "Live weather works when this app is opened in a regular browser. For now, pick today’s weather under More ideas."
-      : "Check your connection, or pick today’s weather under More ideas.";
+      ? "Live weather works when this app is opened in a regular browser. For now, pick the weather when you browse ideas."
+      : "Check your connection, or pick the weather when you browse ideas.";
   } else {
     line = "Add your town to match ideas to today’s weather";
-    tip = "Or pick the weather under More ideas.";
+    tip = "Or pick the weather when you browse ideas.";
   }
   $("wx-line").textContent = line;
   $("wx-tip").textContent = withName(tip);
@@ -2338,27 +2437,61 @@ function climateNote() {
 
 function render() {
   nowOccs = currentOccasions(today);
-  if (state.occ !== "now" && state.occ !== "everyday" && !occRanges(state.occ).length) state.occ = "now";
-  const { list, topped, age } = matches();
+  if (!["now", "all", "everyday"].includes(state.occ) && !occRanges(state.occ).length) state.occ = "now";
+  $("app").dataset.view = state.view;
+  const age = ageInMonths(babyDob(), today);
   renderHeader(age);
   renderWeather();
-  renderRails();
-  const pick = renderPick(list);
-  renderMilestones(age);
-  renderGrid(list, pick, topped);
+  if (state.view === "home") {
+    renderTiles();
+    renderPick(matches(HOME).list);
+    renderMilestones(age);
+  } else {
+    const { list, topped } = matches();
+    renderRails();
+    renderGrid(list, topped);
+  }
 }
 
 /* ---------- events ---------- */
+/* ---------- navigation: #ideas is the list, anything else is home ---------- */
+let openedFromHome = false;
+function showView(v) {
+  state.view = v;
+  render();
+  window.scrollTo(0, 0);
+  if (v === "ideas") $("list-title").focus({ preventScroll: true });
+}
+window.addEventListener("hashchange", () => showView(location.hash === "#ideas" ? "ideas" : "home"));
+function goHome() {
+  // Step back through history when we came from home, so the phone's back button stays in step
+  if (openedFromHome) { openedFromHome = false; history.back(); }
+  else location.hash = "";
+}
+$("back-btn").addEventListener("click", goHome);
+$("brand").addEventListener("click", e => { e.preventDefault(); if (state.view !== "home") goHome(); });
+$("list-title").tabIndex = -1;
+
 document.addEventListener("click", e => {
+  const tile = e.target.closest("[data-tile]");
+  if (tile) {
+    const t = tiles[+tile.dataset.tile];
+    Object.assign(state, t.f, { title: withName(t.title) });
+    openedFromHome = true;
+    location.hash = "ideas";
+    return;
+  }
+  const only = e.target.closest("[data-only]");
+  if (only) { state.only = ""; state.title = ""; render(); return; }
   const occ = e.target.closest("[data-occ].chip");
-  if (occ) { state.occ = occ.dataset.occ; state.shuffle = 0; render(); return; }
+  if (occ) { state.occ = occ.dataset.occ; state.title = ""; render(); return; }
   const wx = e.target.closest("[data-wx]");
   if (wx) { state.wxPick = wx.dataset.wx; state.shuffle = 0; render(); return; }
   const dom = e.target.closest("[data-dom]");
-  if (dom) { state.dom = dom.dataset.dom; state.shuffle = 0; render(); return; }
+  if (dom) { state.dom = dom.dataset.dom; state.title = ""; render(); return; }
   const time = e.target.closest("[data-time]");
-  if (time) { state.time = time.dataset.time; state.shuffle = 0; render(); return; }
-  if (e.target.closest("#shuffle-btn")) { state.shuffle++; render(); $("shuffle-btn").focus(); return; }
+  if (time) { state.time = time.dataset.time; state.title = ""; render(); return; }
+  if (e.target.closest("#shuffle-btn")) { state.shuffle++; pickOpen = false; render(); $("shuffle-btn").focus(); return; }
   const t = e.target.closest("[data-tried]");
   if (t) {
     const id = t.dataset.tried;
@@ -2370,8 +2503,11 @@ document.addEventListener("click", e => {
       b.innerHTML = GLYPHS.heart + (on ? "Tried it!" : "We tried it");
     });
     renderHeader();
+    if (state.view === "home") renderTiles();
   }
 });
+// Remember whether today's steps are open, so a weather refresh doesn't fold them away
+document.addEventListener("toggle", e => { if (e.target.matches("details.how")) pickOpen = e.target.open; }, true);
 
 function openSetup() {
   $("baby-name").value = state.name;
@@ -2429,7 +2565,7 @@ $("loc-form").addEventListener("submit", async e => {
     if (p) setLoc(p); else showLocErr("We couldn’t find that place. Try a nearby city.");
   } catch (err) {
     showLocErr(SANDBOXED
-      ? "Place search doesn’t work inside this view. Open the app in a regular browser, or pick today’s weather under More ideas."
+      ? "Place search doesn’t work inside this view. Open the app in a regular browser, or pick the weather when you browse ideas."
       : "Couldn’t reach the weather service. Check your connection and try again.");
   }
   $("loc-submit").textContent = "Find weather";

@@ -47,6 +47,8 @@ It's all one file: `<style>`, then markup, then one `<script>`. There's no frame
 - `ACTIVITIES`: **178 activities**. Fields: `id`, `occ[]`, `min`/`max` age in months (inclusive), `dom[]`, `mins` (minutes needed), `title`, `short`, `need`, `steps[]`, `why`, `safety`, `src[]`.
 - `FIT`: per-activity overrides keyed by id: `where` (in/out/either; the default is "in"), `wx` (weather it suits), `needs` (only show in this weather), `req` (`cold` = needs frosty winters, `snow` = needs snowy winters, `warm` = only where winters are mild).
 
+**Screens:** two views in the same page. Home (no hash) shows the greeting, weather, today's idea (steps behind a "How to do it" tap), the "Find an idea" tiles from `homeTiles()`, and milestones. `#ideas` shows the filter rails and the full list. Each tile sets the filters from scratch, including `state.only` (`tried`, `out` or `in`), which has no rail and appears as a removable chip instead. Home always uses the fixed `HOME` filters, so today's idea doesn't change when someone browses. Elements marked `home-only` or `ideas-only` show on one view only.
+
 **Logic:**
 - Activity text is written with "she/her". `himHis()` swaps the pronouns when the parent picks "he", and `withName()` puts the baby's name in place of the example name.
 - `matches()` filters activities by age, climate, season or occasion, focus area and time available, then ranks them weather-first. Outdoor ideas drop down in bad weather or thunder.
